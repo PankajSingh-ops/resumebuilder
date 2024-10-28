@@ -1,3 +1,5 @@
+import { LucideIcon } from "lucide-react";
+
 export interface PersonalInfoData {
     firstName: string;
     lastName: string;
@@ -109,5 +111,11 @@ export interface PersonalInfoData {
     patents: Patent[];
     memberships: Membership[];
     awards: Award[];
+  }
+
+  export interface MenuItem {
+    id: "personal" | "experience" | "skills" | "additional";
+    label: string;
+    icon: LucideIcon;
   }
   

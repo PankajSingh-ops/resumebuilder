@@ -326,7 +326,7 @@ const AdditionalInfo: React.FC<Props> = ({ formData, setFormData, onValidationCh
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
             >
               <Icon size={18} />
-              <span>{tab.label}</span>
+              <span className="hidden md:inline">{tab.label}</span>
             </button>
           );
         })}
