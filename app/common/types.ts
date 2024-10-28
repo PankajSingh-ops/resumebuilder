@@ -1,5 +1,24 @@
 import { LucideIcon } from "lucide-react";
 
+export interface ResumeData {
+  personal: {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    phone: string;
+    email: string;
+    linkedin: string;
+    github: string;
+    city: string;
+    state: string;
+    summary: string;
+  };
+  experiences: Experience[];
+  skills: SkillsData;
+  additional: AdditionalInfoData;
+}
+
+
 export interface PersonalInfoData {
     firstName: string;
     lastName: string;

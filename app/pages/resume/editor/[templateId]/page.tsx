@@ -17,6 +17,8 @@ import SkillsProjects from "./SkillPage";
 import AdditionalInfo from "./AdditiionalInfo";
 import { Sidebar } from "@/app/ui/resume/Sidebar";
 import { ProgressBar } from "@/app/ui/resume/ProgressBar";
+import ResumePreview from "@/app/pages/all-resume/list/FirstResume";
+import { Html2PdfOptions } from "html2pdf.js";
 
 // Menu Items Configuration
 const menuItems: MenuItem[] = [
@@ -81,10 +83,14 @@ const ResumeBuilder = () => {
     skills: false,
     additional: false
   });
+  console.log(sectionValidity,'section');
+  
 
   const [currentPage, setCurrentPage] = useState<MenuItem['id']>('personal');
   const [showPreview, setShowPreview] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
 
   const updateFormData = (section: string, data: unknown) => {
     setFormData(prev => ({
@@ -149,7 +155,6 @@ const ResumeBuilder = () => {
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Add form submission logic here
     console.log("Form Data:", formData);
   };
 
@@ -161,9 +166,104 @@ const ResumeBuilder = () => {
   };
 
   // Check if current section is valid before allowing next
-  const handleDownload = () => {
-    return sectionValidity[currentPage];
+
+  const handleDownloadPdf = async () => {
+    setIsGeneratingPdf(true);
+    try {
+      const element = document.querySelector('.resume-preview');
+      if (!element) {
+        throw new Error('Resume preview element not found');
+      }
+  
+      const html2pdf = (await import('html2pdf.js')).default;
+      
+      const options: Html2PdfOptions = {
+        margin: 0.5,
+        filename: `resume-${formData.personal.firstName}-${formData.personal.lastName}.pdf`,
+        image: { 
+          type: 'jpeg' as const, // Explicitly type as 'jpeg'
+          quality: 0.98 
+        },
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          letterRendering: true
+        },
+        jsPDF: { 
+          unit: 'in' as const, 
+          format: 'letter',
+          orientation: 'portrait' as const,
+          compress: true
+        },
+        pagebreak: { 
+          mode: ['avoid-all', 'css', 'legacy'] as const
+        }
+      };
+  
+      // Create instance and chain methods
+      const pdf = html2pdf().from(element);
+      
+      // Apply options and generate PDF
+      await pdf.set(options).save();
+  
+      setShowSuccessToast(true);
+      setTimeout(() => setShowSuccessToast(false), 3000);
+  
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('There was an error generating your PDF. Please try again.');
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
+
+  const PreviewModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-xl p-6 w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-bold">Resume Preview</h3>
+          <button
+            onClick={() => setShowPreview(false)}
+            className="text-gray-500 hover:text-gray-700"
+            aria-label="Close preview"
+          >
+            ×
+          </button>
+        </div>
+        <div className="resume-preview">
+          <ResumePreview formData={formData} />
+        </div>
+        <div className="mt-4 flex justify-end space-x-4">
+          <button
+            onClick={() => setShowPreview(false)}
+            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"
+            disabled={isGeneratingPdf}
+          >
+            Edit
+          </button>
+          <button
+            onClick={handleDownloadPdf}
+            disabled={isGeneratingPdf}
+            className={`px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center space-x-2
+              ${isGeneratingPdf ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+          >
+            {isGeneratingPdf ? (
+              <>
+                <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                <span>Generating PDF...</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 mr-2" />
+                <span>Download PDF</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -204,7 +304,7 @@ const ResumeBuilder = () => {
 
             {currentPage === menuItems[menuItems.length - 1].id ? (
               <button
-                type="submit"
+              onClick={()=>setShowPreview(true)}
                 className="flex items-center space-x-2 px-8 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors duration-200 shadow-sm"
               >
                 <Check size={20} />
@@ -250,35 +350,8 @@ const ResumeBuilder = () => {
         </form>
 
         {/* Preview Modal */}
-        {showPreview && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold">Resume Preview</h3>
-                <button
-                  onClick={() => setShowPreview(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ×
-                </button>
-              </div>
-              <div className="mt-4 flex justify-end space-x-4">
-                <button
-                  onClick={() => setShowPreview(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={handleDownload}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                >
-                  Download PDF
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {showPreview && <PreviewModal />}
+
 
         {/* Success Toast */}
         {showSuccessToast && (
