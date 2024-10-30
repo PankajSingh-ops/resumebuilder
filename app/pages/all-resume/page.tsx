@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Briefcase, UserCheck, Building2, LineChart, Code2, Users, Filter } from 'lucide-react';
+import { Header } from '@/app/common/Header';
+import { Footer } from '@/app/common/Footer';
 
 const categories = [
   { id: 'all', label: 'All Templates', icon: Filter, count: 45 },
@@ -58,6 +60,8 @@ const ResumeTemplateSelector = () => {
   };
 
   return (
+    <>
+    <Header/>
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
@@ -117,7 +121,7 @@ const ResumeTemplateSelector = () => {
               {filteredTemplates.map((template) => (
                 <div
                   key={template.id}
-                  className="group relative bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+                  className="group relative bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
                   onClick={() => handleTemplateSelect(template.id)}
                 >
                   <div className="aspect-w-3 aspect-h-4">
@@ -147,6 +151,8 @@ const ResumeTemplateSelector = () => {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

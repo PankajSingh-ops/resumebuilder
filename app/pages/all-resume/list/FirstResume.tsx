@@ -17,7 +17,7 @@ interface ResumePreviewProps {
   formData: ResumeData;
 }
 
-const ResumePreview: React.FC<ResumePreviewProps> = ({ formData }) => {
+const FirstResume: React.FC<ResumePreviewProps> = ({ formData}) => {
   const { personal, experiences = [], skills, additional = { publications: [], patents: [], memberships: [], awards: [] } } = formData || {
     personal: {} as PersonalInfoData,
     experiences: [],
@@ -30,6 +30,7 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({ formData }) => {
     },
     additional: { publications: [], patents: [], memberships: [], awards: [] }
   };
+  
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white shadow-lg">
@@ -285,4 +286,4 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({ formData }) => {
   );
 };
 
-export default ResumePreview;
+export default FirstResume;

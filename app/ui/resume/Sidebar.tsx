@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { MenuItem } from "@/app/common/types";
+import { useRouter } from "next/navigation";
 
 interface SidebarProps {
   menuItems: MenuItem[];
@@ -17,6 +18,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [hoveredItem, setHoveredItem] = useState<MenuItem["id"] | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const router=useRouter()
 
   useEffect(() => {
     setIsClient(true);
@@ -59,9 +61,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       <div className={`p-6 border-b border-gray-200 ${isCollapsed ? "text-center" : ""}`}>
-        <h2 className={`font-bold text-gray-800
+        <h2 className={`font-bold cursor-pointer text-gray-800
           ${isCollapsed ? "text-sm" : "text-lg"}
           transition-all duration-200`}
+          onClick={()=>router.push('/')}
         >
           {isCollapsed ? "RB" : "Resume Builder"}
         </h2>

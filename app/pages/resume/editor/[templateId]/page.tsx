@@ -11,14 +11,20 @@ import {
   Award,
 } from "lucide-react";
 import PersonalInfo from "./PersonalInfo";
-import { AdditionalInfoData, Experience, MenuItem, SkillsData } from "@/app/common/types";
+import {
+  AdditionalInfoData,
+  Experience,
+  MenuItem,
+  SkillsData,
+} from "@/app/common/types";
 import WorkExperience from "./Workexperience";
 import SkillsProjects from "./SkillPage";
 import AdditionalInfo from "./AdditiionalInfo";
 import { Sidebar } from "@/app/ui/resume/Sidebar";
 import { ProgressBar } from "@/app/ui/resume/ProgressBar";
-import ResumePreview from "@/app/pages/all-resume/list/FirstResume";
 import { Html2PdfOptions } from "html2pdf.js";
+import { useParams } from "next/navigation";
+import ResumePreview from "@/app/pages/all-resume/list/previewResume";
 
 // Menu Items Configuration
 const menuItems: MenuItem[] = [
@@ -27,7 +33,6 @@ const menuItems: MenuItem[] = [
   { id: "skills", label: "Skills & Projects", icon: Star },
   { id: "additional", label: "Additional Info", icon: Award },
 ];
-
 
 // Main Resume Builder Component
 const ResumeBuilder = () => {
@@ -49,16 +54,16 @@ const ResumeBuilder = () => {
     additional: AdditionalInfoData;
   }>({
     personal: {
-      firstName: '',
-      lastName: '',
-      dateOfBirth: '',
-      phone: '',
-      email: '',
-      linkedin: '',
-      github: '',
-      city: '',
-      state: '',
-      summary: ''
+      firstName: "",
+      lastName: "",
+      dateOfBirth: "",
+      phone: "",
+      email: "",
+      linkedin: "",
+      github: "",
+      city: "",
+      state: "",
+      summary: "",
     },
     experiences: [],
     skills: {
@@ -66,14 +71,14 @@ const ResumeBuilder = () => {
       softSkills: [],
       certifications: [],
       languages: [],
-      hobbies: []
+      hobbies: [],
     },
     additional: {
       publications: [],
       patents: [],
       memberships: [],
-      awards: []
-    }
+      awards: [],
+    },
   });
 
   // Validation state for each section
@@ -81,72 +86,130 @@ const ResumeBuilder = () => {
     personal: false,
     experience: false,
     skills: false,
-    additional: false
+    additional: false,
   });
-  console.log(sectionValidity,'section');
-  
+  console.log(sectionValidity, "section");
 
-  const [currentPage, setCurrentPage] = useState<MenuItem['id']>('personal');
+  const [currentPage, setCurrentPage] = useState<MenuItem["id"]>("personal");
   const [showPreview, setShowPreview] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const params = useParams();
+  const resumeId = params.templateId;
+  const resetFormData = () => {
+    setFormData({
+      personal: {
+        firstName: "",
+        lastName: "",
+        dateOfBirth: "",
+        phone: "",
+        email: "",
+        linkedin: "",
+        github: "",
+        city: "",
+        state: "",
+        summary: "",
+      },
+      experiences: [],
+      skills: {
+        technicalSkills: [],
+        softSkills: [],
+        certifications: [],
+        languages: [],
+        hobbies: [],
+      },
+      additional: {
+        publications: [],
+        patents: [],
+        memberships: [],
+        awards: [],
+      },
+    });
 
+    // Reset section validity
+    setSectionValidity({
+      personal: false,
+      experience: false,
+      skills: false,
+      additional: false,
+    });
+
+    // Reset to first page
+    setCurrentPage("personal");
+
+    // Clear local storage
+    localStorage.removeItem("resumeBuilderDraft");
+  };
 
   const updateFormData = (section: string, data: unknown) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [section]: data
+      [section]: data,
     }));
   };
 
   // Update validation status for a section
   const updateSectionValidity = (section: string, isValid: boolean) => {
-    setSectionValidity(prev => ({
+    setSectionValidity((prev) => ({
       ...prev,
-      [section]: isValid
+      [section]: isValid,
     }));
   };
 
   const renderContent = () => {
     switch (currentPage) {
-      case 'personal':
+      case "personal":
         return (
           <PersonalInfo
             formData={formData.personal}
-            setFormData={(data) => updateFormData('personal', data)}
-            onValidationChange={(isValid: boolean) => updateSectionValidity('personal', isValid)}
+            setFormData={(data) => updateFormData("personal", data)}
+            onValidationChange={(isValid: boolean) =>
+              updateSectionValidity("personal", isValid)
+            }
           />
         );
-      case 'experience':
+      case "experience":
         return (
           <WorkExperience
             formData={formData.experiences}
-            setFormData={(data: Experience[]) => updateFormData('experiences', data)}
-            onValidationChange={(isValid: boolean) => updateSectionValidity('experience', isValid)}
+            setFormData={(data: Experience[]) =>
+              updateFormData("experiences", data)
+            }
+            onValidationChange={(isValid: boolean) =>
+              updateSectionValidity("experience", isValid)
+            }
           />
         );
-        case 'skills':
-          return (
-            <SkillsProjects
-              formData={formData.skills}
-              setFormData={(data: SkillsData) => updateFormData('skills', data)}
-              onValidationChange={(isValid: boolean) => updateSectionValidity('skills', isValid)}
-            />
-          );
-          case 'additional':
-            return (
-              <AdditionalInfo
-                formData={formData.additional}
-                setFormData={(data: AdditionalInfoData) => updateFormData('additional', data)}
-                onValidationChange={(isValid: boolean) => updateSectionValidity('additional', isValid)}
-              />
-            );
+      case "skills":
+        return (
+          <SkillsProjects
+            formData={formData.skills}
+            setFormData={(data: SkillsData) => updateFormData("skills", data)}
+            onValidationChange={(isValid: boolean) =>
+              updateSectionValidity("skills", isValid)
+            }
+          />
+        );
+      case "additional":
+        return (
+          <AdditionalInfo
+            formData={formData.additional}
+            setFormData={(data: AdditionalInfoData) =>
+              updateFormData("additional", data)
+            }
+            onValidationChange={(isValid: boolean) =>
+              updateSectionValidity("additional", isValid)
+            }
+          />
+        );
       default:
         return (
           <PersonalInfo
             formData={formData.personal}
-            setFormData={(data) => updateFormData('personal', data)}
-            onValidationChange={(isValid: boolean) => updateSectionValidity('personal', isValid)}
+            setFormData={(data) => updateFormData("personal", data)}
+            onValidationChange={(isValid: boolean) =>
+              updateSectionValidity("personal", isValid)
+            }
           />
         );
     }
@@ -170,49 +233,62 @@ const ResumeBuilder = () => {
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
     try {
-      const element = document.querySelector('.resume-preview');
+      const element = document.querySelector(".resume-preview");
       if (!element) {
-        throw new Error('Resume preview element not found');
+        throw new Error("Resume preview element not found");
       }
-  
-      const html2pdf = (await import('html2pdf.js')).default;
-      
+
+      const html2pdf = (await import("html2pdf.js")).default;
+
       const options: Html2PdfOptions = {
         margin: 0.5,
         filename: `resume-${formData.personal.firstName}-${formData.personal.lastName}.pdf`,
-        image: { 
-          type: 'jpeg' as const, // Explicitly type as 'jpeg'
-          quality: 0.98 
-        },
-        html2canvas: { 
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: {
           scale: 2,
           useCORS: true,
           logging: false,
-          letterRendering: true
+          letterRendering: true,
         },
-        jsPDF: { 
-          unit: 'in' as const, 
-          format: 'letter',
-          orientation: 'portrait' as const,
-          compress: true
+        jsPDF: {
+          unit: "in",
+          format: "letter",
+          orientation: "portrait",
+          compress: true,
         },
-        pagebreak: { 
-          mode: ['avoid-all', 'css', 'legacy'] as const
-        }
+        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
       };
-  
-      // Create instance and chain methods
+
       const pdf = html2pdf().from(element);
-      
-      // Apply options and generate PDF
       await pdf.set(options).save();
-  
+
+      // Show success message
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 3000);
-  
+
+      // Reset form after successful download
+      resetFormData();
+
+      // Close preview modal
+      setShowPreview(false);
+
+      // Show a different success message for reset
+      const resetToast = document.createElement("div");
+      resetToast.className =
+        "fixed bottom-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-2 z-50";
+      resetToast.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+        </svg>
+        <span>Resume reset successfully! Start a new one.</span>
+      `;
+      document.body.appendChild(resetToast);
+      setTimeout(() => {
+        resetToast.remove();
+      }, 3000);
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('There was an error generating your PDF. Please try again.');
+      console.error("Error generating PDF:", error);
+      alert("There was an error generating your PDF. Please try again.");
     } finally {
       setIsGeneratingPdf(false);
     }
@@ -232,7 +308,7 @@ const ResumeBuilder = () => {
           </button>
         </div>
         <div className="resume-preview">
-          <ResumePreview formData={formData} />
+          <ResumePreview formData={formData} resumeId={resumeId} />
         </div>
         <div className="mt-4 flex justify-end space-x-4">
           <button
@@ -246,7 +322,11 @@ const ResumeBuilder = () => {
             onClick={handleDownloadPdf}
             disabled={isGeneratingPdf}
             className={`px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center space-x-2
-              ${isGeneratingPdf ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+              ${
+                isGeneratingPdf
+                  ? "opacity-75 cursor-not-allowed"
+                  : "hover:bg-blue-600"
+              }`}
           >
             {isGeneratingPdf ? (
               <>
@@ -304,7 +384,7 @@ const ResumeBuilder = () => {
 
             {currentPage === menuItems[menuItems.length - 1].id ? (
               <button
-              onClick={()=>setShowPreview(true)}
+                onClick={() => setShowPreview(true)}
                 className="flex items-center space-x-2 px-8 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors duration-200 shadow-sm"
               >
                 <Check size={20} />
@@ -351,7 +431,6 @@ const ResumeBuilder = () => {
 
         {/* Preview Modal */}
         {showPreview && <PreviewModal />}
-
 
         {/* Success Toast */}
         {showSuccessToast && (

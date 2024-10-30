@@ -137,4 +137,29 @@ export interface PersonalInfoData {
     label: string;
     icon: LucideIcon;
   }
+
+  export interface NavItem {
+    title: string;
+    href: string;
+    icon: React.ReactNode;
+    submenu?: Array<{
+      title: string;
+      href: string;
+      description?: string;
+    }>;
+  }
+  
+  export interface FooterSection {
+    title: string;
+    links: Array<{
+      title: string;
+      href: string;
+    }>;
+  }
+  
+  export interface SocialLink {
+    platform: string;
+    href: string;
+    icon: React.ReactNode;
+  }
   
