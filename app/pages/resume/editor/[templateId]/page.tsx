@@ -25,13 +25,14 @@ import SkillsProjects from "./SkillPage";
 import AdditionalInfo from "./AdditiionalInfo";
 import { Sidebar } from "@/app/ui/resume/Sidebar";
 import { ProgressBar } from "@/app/ui/resume/ProgressBar";
-import { Html2PdfOptions } from "html2pdf.js";
 import { useParams } from "next/navigation";
 import ResumePreview from "@/app/pages/all-resume/list/previewResume";
 import Education from "./Education";
 import ResumeHeader from "@/app/ui/resume/ResumeHeader";
 import { AlertDialog, AlertDialogDescription, AlertDialogTitle } from "@/app/ui/alert";
-import { useAppSelector } from "@/redux/store/store";
+import { useAppDispatch, useAppSelector } from "@/redux/store/store";
+import { decrementCredits, fetchCredits } from "@/app/routes/Credits";
+import { updateCredits } from "@/redux/authSlice/authSlice";
 
 // Menu Items Configuration
 const menuItems: MenuItem[] = [
@@ -109,6 +110,7 @@ const ResumeBuilder = () => {
   const params = useParams();
   const resumeId = params.templateId;
   const token=useAppSelector((state)=>state.auth.token)
+  const dispatch=useAppDispatch()
   const resetFormData = () => {
     setFormData({
       personal: {
@@ -149,51 +151,34 @@ const ResumeBuilder = () => {
     localStorage.removeItem("resumeBuilderDraft");
   };
   useEffect(() => {
-    const fetchUserCredits = async () => {
+    const loadCredits = async () => {
+      if (!token) return;
+      
       try {
-        const response = await fetch('/api/auth/credits', {
-          headers: {
-            'Authorization': `Bearer ${token}`, // Use token from Redux
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch credits');
-        }
-        
-        const data = await response.json();
-        if (data.credits !== undefined) {
-          setCredits(data.credits);
-        }
+        const userCredits = await fetchCredits(token);
+        setCredits(userCredits);
+        dispatch(updateCredits(userCredits));
       } catch (error) {
         console.error('Error fetching credits:', error);
         setError('Failed to fetch credit information');
       }
     };
 
-    if (token) {
-      fetchUserCredits();
-    }
-  }, [token]);
+    loadCredits();
+  }, [token, dispatch]);
 
-  const updateCredits = async () => {
+  // Function to update credits
+  const updateUserCredits = async () => {
+    if (!token) {
+      setError('Authentication required');
+      throw new Error('Authentication required');
+    }
+
     try {
-      const response = await fetch('/api/auth/credits', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ action: 'decrement' }),
-      });
-      
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to update credits');
-      }
-      
-      const data = await response.json();
-      setCredits(data.credits);
+      const newCredits = await decrementCredits(token);
+      setCredits(newCredits);
+      dispatch(updateCredits(newCredits));
+      return newCredits;
     } catch (error) {
       console.error('Error updating credits:', error);
       setError(error instanceof Error ? error.message : 'Failed to update credits');
@@ -301,76 +286,49 @@ const ResumeBuilder = () => {
       return;
     }
 
-    if (credits === null) {
-      setError('Unable to verify credits. Please try again.');
-      return;
-    }
-
-    if (credits <= 0) {
-      setError('You have no credits remaining. Please purchase more credits to download.');
+    if (credits === null || credits <= 0) {
+      setError('No credits available. Please purchase more credits to download.');
       return;
     }
 
     setIsGeneratingPdf(true);
     try {
+      // Generate PDF logic here...
       const element = document.querySelector(".resume-preview");
-      if (!element) {
-        throw new Error("Resume preview element not found");
-      }
+      if (!element) throw new Error("Resume preview element not found");
 
       const html2pdf = (await import("html2pdf.js")).default;
-
-      const options: Html2PdfOptions = {
-        margin: 0.5,
-        filename: `resume-${formData.personal.firstName}-${formData.personal.lastName}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          letterRendering: true,
-        },
-        jsPDF: {
-          unit: "in",
-          format: "letter",
-          orientation: "portrait",
-          compress: true,
-        },
-        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
-      };
-
-      // Generate PDF
+      // PDF generation options...
       const pdf = html2pdf().from(element);
-      await pdf.set(options).save();
+      await pdf.save();
       
       // Update credits after successful download
-      await updateCredits();
+      const newCredits = await updateUserCredits();
       
-      setShowSuccessToast(true);
-      setTimeout(() => setShowSuccessToast(false), 3000);
-      resetFormData();
-      setShowPreview(false);
-      
-      const resetToast = document.createElement("div");
-      resetToast.className =
+      // Show success message
+      const successToast = document.createElement("div");
+      successToast.className =
         "fixed bottom-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-2 z-50";
-      resetToast.innerHTML = `
+      successToast.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
         </svg>
-        <span>Resume downloaded successfully! Credits remaining: ${credits - 1}</span>
+        <span>Resume downloaded successfully! Credits remaining: ${newCredits}</span>
       `;
-      document.body.appendChild(resetToast);
-      setTimeout(() => {
-        resetToast.remove();
-      }, 3000);
+      document.body.appendChild(successToast);
+      setTimeout(() => successToast.remove(), 3000);
+
+      // Reset form and close preview
+      resetFormData();
+      setShowPreview(false);
     } catch (error) {
-      console.error("Error generating PDF:", error);
-      setError(error instanceof Error ? error.message : 'Failed to generate PDF. Please try again.');
+      console.error("Error:", error);
+      setError(error instanceof Error ? error.message : 'Failed to process download');
     } finally {
       setIsGeneratingPdf(false);
     }
   };
+
 
 
   const PreviewModal = () => (
