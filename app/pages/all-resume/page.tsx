@@ -39,8 +39,31 @@ const templates = [
     image: 'https://marketplace.canva.com/EAFjRZP7Qy4/1/0/1131w/canva-minimalist-modern-professional-cv-resume-xkDELtpQH94.jpg',
     categories: ['technical', 'professional'],
     color: '#9333ea'
-  }
-  // Add more templates as needed
+  },
+  {
+    id: 4,
+    title: 'Creative Designer',
+    description: 'Perfect for showcasing your creative projects and portfolio',
+    image: 'https://marketplace.canva.com/EAFjRZP7Qy4/1/0/1131w/canva-minimalist-modern-professional-cv-resume-xkDELtpQH94.jpg',
+    categories: ['creative', 'portfolio'],
+    color: '#f97316'
+},
+{
+    id: 5,
+    title: 'Sales Specialist',
+    description: 'Highlight your sales experience and accomplishments',
+    image: 'https://marketplace.canva.com/EAFjRZP7Qy4/1/0/1131w/canva-minimalist-modern-professional-cv-resume-xkDELtpQH94.jpg',
+    categories: ['sales', 'professional'],
+    color: '#facc15'
+},
+{
+    id: 6,
+    title: 'Education Professional',
+    description: 'Designed for educators and academic professionals',
+    image: 'https://marketplace.canva.com/EAFjRZP7Qy4/1/0/1131w/canva-minimalist-modern-professional-cv-resume-xkDELtpQH94.jpg',
+    categories: ['mnc', 'academic'],
+    color: '#10b981'
+}
 ];
 
 const ResumeTemplateSelector = () => {
