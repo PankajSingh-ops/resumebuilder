@@ -9,18 +9,31 @@ import {
   Award,
   Book,
   Globe,
-  Star
+  Star,
+  GraduationCap
 } from 'lucide-react';
-import { ResumeData, PersonalInfoData, } from '@/app/common/types';
+import { PersonalInfoData, ResumeData } from '@/app/common/types';
 
 interface ResumePreviewProps {
   formData: ResumeData;
 }
 
-const FirstResume: React.FC<ResumePreviewProps> = ({ formData}) => {
-  const { personal, experiences = [], skills, additional = { publications: [], patents: [], memberships: [], awards: [] } } = formData || {
+const FirstResume: React.FC<ResumePreviewProps> = ({ formData }) => {
+  const { 
+    personal, 
+    experiences = [], 
+    education = [],
+    skills, 
+    additional = { 
+      publications: [], 
+      patents: [], 
+      memberships: [], 
+      awards: [] 
+    } 
+  } = formData || {
     personal: {} as PersonalInfoData,
     experiences: [],
+    education: [],
     skills: {
       technicalSkills: [],
       softSkills: [],
@@ -28,9 +41,13 @@ const FirstResume: React.FC<ResumePreviewProps> = ({ formData}) => {
       languages: [],
       hobbies: []
     },
-    additional: { publications: [], patents: [], memberships: [], awards: [] }
+    additional: { 
+      publications: [], 
+      patents: [], 
+      memberships: [], 
+      awards: [] 
+    }
   };
-  
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white shadow-lg">
@@ -85,6 +102,52 @@ const FirstResume: React.FC<ResumePreviewProps> = ({ formData}) => {
           </section>
         )}
 
+        {/* Education Section */}
+        {education && education.length > 0 && (
+          <section className="mb-8">
+            <h2 className="text-xl font-semibold text-gray-800 mb-3 border-b border-gray-200 pb-2 flex items-center">
+              <GraduationCap className="w-5 h-5 mr-2" />
+              Education
+            </h2>
+            <div className="space-y-6">
+              {education.map((edu) => (
+                <div key={edu.id} className="border-l-2 border-gray-200 pl-4">
+                  <h3 className="text-lg font-medium text-gray-800">{edu.degree || edu.type}</h3>
+                  <div className="text-gray-600">
+                    <p className="font-medium">{edu.schoolName}</p>
+                    <p className="text-sm">{edu.location}</p>
+                    <p className="text-sm flex items-center space-x-2">
+                      <Calendar className="w-4 h-4" />
+                      <span>{edu.startDate} - {edu.endDate}</span>
+                    </p>
+                    {edu.gpa && <p className="text-sm">GPA: {edu.gpa}</p>}
+                  </div>
+                  {edu.description && <p className="text-gray-600 mt-2">{edu.description}</p>}
+                  {edu.achievements?.length > 0 && (
+                    <ul className="mt-2 list-disc list-inside text-gray-600">
+                      {edu.achievements.map((achievement, idx) => (
+                        <li key={idx}>{achievement}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {edu.courses?.length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-sm font-medium text-gray-700">Relevant Courses:</p>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {edu.courses.map((course, idx) => (
+                          <span key={idx} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                            {course}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Work Experience */}
         {experiences && experiences.length > 0 && (
           <section className="mb-8">
@@ -92,14 +155,15 @@ const FirstResume: React.FC<ResumePreviewProps> = ({ formData}) => {
               Experience
             </h2>
             <div className="space-y-6">
-              {experiences.map((exp,) => (
+              {experiences.map((exp) => (
                 <div key={exp.id} className="border-l-2 border-gray-200 pl-4">
                   <h3 className="text-lg font-medium text-gray-800">{exp.title}</h3>
                   <div className="text-gray-600">
                     <p className="font-medium">{exp.organization}</p>
+                    {exp.location && <p className="text-sm">{exp.location}</p>}
                     <p className="text-sm flex items-center space-x-2">
                       <Calendar className="w-4 h-4" />
-                      <span>{exp.startDate} - {exp.endDate || 'Present'}</span>
+                      <span>{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</span>
                     </p>
                   </div>
                   {exp.description && <p className="text-gray-600 mt-2">{exp.description}</p>}
@@ -110,7 +174,7 @@ const FirstResume: React.FC<ResumePreviewProps> = ({ formData}) => {
                       ))}
                     </ul>
                   )}
-                  {exp.technologies&&exp.technologies?.length > 0 && (
+                  {exp.technologies && exp.technologies?.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-2">
                       {exp.technologies.map((tech, idx) => (
                         <span key={idx} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
@@ -245,7 +309,7 @@ const FirstResume: React.FC<ResumePreviewProps> = ({ formData}) => {
                   </ul>
                 </div>
               )}
-            </div>
+              </div>
           </section>
         )}
 

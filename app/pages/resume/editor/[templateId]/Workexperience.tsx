@@ -22,61 +22,6 @@ interface WorkExperienceProps {
     onValidationChange: (isValid: boolean) => void;
 }
   
-const getInitialExperiences = (): Experience[] => {
-    const currentDate = new Date().toISOString().split('T')[0];
-    
-    return [
-      {
-        id: 'initial-work',
-        type: 'work',
-        title: '',
-        organization: '',
-        location: '',
-        startDate: currentDate,
-        endDate: '',
-        current: true,
-        description: '',
-        achievements: ['']
-      },
-      {
-        id: 'initial-internship',
-        type: 'internship',
-        title: '',
-        organization: '',
-        location: '',
-        startDate: currentDate,
-        endDate: '',
-        current: true,
-        description: '',
-        achievements: ['']
-      },
-      {
-        id: 'initial-project',
-        type: 'project',
-        title: '',
-        organization: '',
-        location: '',
-        startDate: currentDate,
-        endDate: '',
-        current: true,
-        description: '',
-        achievements: [''],
-        technologies: ['']
-      },
-      {
-        id: 'initial-volunteer',
-        type: 'volunteer',
-        title: '',
-        organization: '',
-        location: '',
-        startDate: currentDate,
-        endDate: '',
-        current: true,
-        description: '',
-        achievements: ['']
-      }
-    ];
-};
 
 const WorkExperience: React.FC<WorkExperienceProps> = ({
   formData,
@@ -84,12 +29,6 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({
   onValidationChange
 }) => {
   const [activeTab, setActiveTab] = useState<'work' | 'internship' | 'project' | 'volunteer'>('work');
-
-  useEffect(() => {
-    if (formData.length === 0) {
-      setFormData(getInitialExperiences());
-    }
-  }, []);
 
   const addNewExperience = () => {
     const newExperience: Experience = {

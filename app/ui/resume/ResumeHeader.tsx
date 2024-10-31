@@ -1,5 +1,5 @@
-import { selectCurrentUser } from "@/redux/authSlice/authSlice";
-import { useAppSelector } from "@/redux/store/store";
+import { logout, selectCurrentUser } from "@/redux/authSlice/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/store/store";
 import { CreditCard, FileCheck, LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -7,7 +7,13 @@ import { useState } from "react";
 function ResumeHeader() {
     const user = useAppSelector(selectCurrentUser);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const dispatch=useAppDispatch()
+    const handleLogout = () => {
+        dispatch(logout());
+        router.push("/")
+      };
   const router=useRouter()
+  
   return (
     <header className="w-full bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center">
       <div className="flex items-center space-x-3 cursor-pointer" onClick={()=>router.push("/")}>
@@ -57,7 +63,7 @@ function ResumeHeader() {
                 <Settings className="w-4 h-4 mr-3" />
                 Settings
               </a>
-              <button className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+              <button className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100" onClick={handleLogout}>
                 <LogOut className="w-4 h-4 mr-3" />
                 Sign out
               </button>
@@ -65,6 +71,7 @@ function ResumeHeader() {
           )}
         </div>
       </div>
+     
     </header>
   )
 }

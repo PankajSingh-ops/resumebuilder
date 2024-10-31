@@ -84,10 +84,6 @@ const handleSubmit = async () => {
       throw new Error(data.message || 'Authentication failed');
     }
     
-    // Save to localStorage before dispatching
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    
     dispatch(setCredentials({
       user: data.user,
       token: data.token

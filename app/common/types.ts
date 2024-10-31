@@ -14,6 +14,7 @@ export interface ResumeData {
     summary: string;
   };
   experiences: Experience[];
+  education: EducationEntry[]
   skills: SkillsData;
   additional: AdditionalInfoData;
 }
