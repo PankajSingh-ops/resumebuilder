@@ -50,7 +50,7 @@ export interface PersonalInfoData {
 
   export interface Experience {
     id: string;
-    type: 'work' | 'education' | 'project' | 'volunteer';
+    type: 'work' | 'internship' | 'project' | 'volunteer';
     title: string;
     organization: string;
     location?: string;
@@ -133,7 +133,7 @@ export interface PersonalInfoData {
   }
 
   export interface MenuItem {
-    id: "personal" | "experience" | "skills" | "additional";
+    id: "personal" | "experience" | "education" | "skills" | "additional";
     label: string;
     icon: LucideIcon;
   }
@@ -161,5 +161,19 @@ export interface PersonalInfoData {
     platform: string;
     href: string;
     icon: React.ReactNode;
+  }
+  export interface EducationEntry {
+    id: string;
+    type: 'highSchool' | 'intermediate' | 'undergraduate' | 'graduate';
+    schoolName: string;
+    location: string;
+    startDate: string;
+    endDate: string;
+    field?: string;
+    degree?: string;
+    gpa?: string;
+    description: string;
+    achievements: string[];
+    courses: string[];
   }
   

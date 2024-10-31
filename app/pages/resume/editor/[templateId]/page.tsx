@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ChevronRight,
   ChevronLeft,
@@ -9,10 +9,13 @@ import {
   Briefcase,
   Star,
   Award,
+  Book,
+  AlertCircle,
 } from "lucide-react";
 import PersonalInfo from "./PersonalInfo";
 import {
   AdditionalInfoData,
+  EducationEntry,
   Experience,
   MenuItem,
   SkillsData,
@@ -25,11 +28,16 @@ import { ProgressBar } from "@/app/ui/resume/ProgressBar";
 import { Html2PdfOptions } from "html2pdf.js";
 import { useParams } from "next/navigation";
 import ResumePreview from "@/app/pages/all-resume/list/previewResume";
+import Education from "./Education";
+import ResumeHeader from "@/app/ui/resume/ResumeHeader";
+import { AlertDialog, AlertDialogDescription, AlertDialogTitle } from "@/app/ui/alert";
+import { useAppSelector } from "@/redux/store/store";
 
 // Menu Items Configuration
 const menuItems: MenuItem[] = [
   { id: "personal", label: "Personal Information", icon: User },
   { id: "experience", label: "Work Experience", icon: Briefcase },
+  { id: "education", label: "education Info", icon: Book },
   { id: "skills", label: "Skills & Projects", icon: Star },
   { id: "additional", label: "Additional Info", icon: Award },
 ];
@@ -50,6 +58,7 @@ const ResumeBuilder = () => {
       summary: string;
     };
     experiences: Experience[];
+    education: EducationEntry[]; // Add this line
     skills: SkillsData;
     additional: AdditionalInfoData;
   }>({
@@ -66,6 +75,7 @@ const ResumeBuilder = () => {
       summary: "",
     },
     experiences: [],
+    education: [], // Add this line
     skills: {
       technicalSkills: [],
       softSkills: [],
@@ -94,8 +104,11 @@ const ResumeBuilder = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [credits, setCredits] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const params = useParams();
   const resumeId = params.templateId;
+  const token=useAppSelector((state)=>state.auth.token)
   const resetFormData = () => {
     setFormData({
       personal: {
@@ -111,6 +124,7 @@ const ResumeBuilder = () => {
         summary: "",
       },
       experiences: [],
+      education: [],
       skills: {
         technicalSkills: [],
         softSkills: [],
@@ -125,22 +139,67 @@ const ResumeBuilder = () => {
         awards: [],
       },
     });
-
-    // Reset section validity
     setSectionValidity({
       personal: false,
       experience: false,
       skills: false,
       additional: false,
     });
-
-    // Reset to first page
     setCurrentPage("personal");
-
-    // Clear local storage
     localStorage.removeItem("resumeBuilderDraft");
   };
+  useEffect(() => {
+    const fetchUserCredits = async () => {
+      try {
+        const response = await fetch('/api/auth/credits', {
+          headers: {
+            'Authorization': `Bearer ${token}`, // Use token from Redux
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch credits');
+        }
+        
+        const data = await response.json();
+        if (data.credits !== undefined) {
+          setCredits(data.credits);
+        }
+      } catch (error) {
+        console.error('Error fetching credits:', error);
+        setError('Failed to fetch credit information');
+      }
+    };
 
+    if (token) {
+      fetchUserCredits();
+    }
+  }, [token]);
+
+  const updateCredits = async () => {
+    try {
+      const response = await fetch('/api/auth/credits', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ action: 'decrement' }),
+      });
+      
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to update credits');
+      }
+      
+      const data = await response.json();
+      setCredits(data.credits);
+    } catch (error) {
+      console.error('Error updating credits:', error);
+      setError(error instanceof Error ? error.message : 'Failed to update credits');
+      throw error;
+    }
+  };
   const updateFormData = (section: string, data: unknown) => {
     setFormData((prev) => ({
       ...prev,
@@ -180,6 +239,16 @@ const ResumeBuilder = () => {
             }
           />
         );
+      case "education":
+        return (
+          <Education
+            formData={formData.education}
+            setFormData={(data) => updateFormData("education", data)}
+            onValidationChange={(isValid) =>
+              updateSectionValidity("education", isValid)
+            }
+          />
+        );
       case "skills":
         return (
           <SkillsProjects
@@ -215,22 +284,33 @@ const ResumeBuilder = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form Data:", formData);
   };
 
-  // Handle saving draft
   const handleSaveDraft = () => {
     localStorage.setItem("resumeBuilderDraft", JSON.stringify(formData));
     setShowSuccessToast(true);
     setTimeout(() => setShowSuccessToast(false), 3000);
   };
 
-  // Check if current section is valid before allowing next
-
   const handleDownloadPdf = async () => {
+    if (!token) {
+      setError('Please log in to download the resume');
+      return;
+    }
+
+    if (credits === null) {
+      setError('Unable to verify credits. Please try again.');
+      return;
+    }
+
+    if (credits <= 0) {
+      setError('You have no credits remaining. Please purchase more credits to download.');
+      return;
+    }
+
     setIsGeneratingPdf(true);
     try {
       const element = document.querySelector(".resume-preview");
@@ -259,20 +339,18 @@ const ResumeBuilder = () => {
         pagebreak: { mode: ["avoid-all", "css", "legacy"] },
       };
 
+      // Generate PDF
       const pdf = html2pdf().from(element);
       await pdf.set(options).save();
-
-      // Show success message
+      
+      // Update credits after successful download
+      await updateCredits();
+      
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 3000);
-
-      // Reset form after successful download
       resetFormData();
-
-      // Close preview modal
       setShowPreview(false);
-
-      // Show a different success message for reset
+      
       const resetToast = document.createElement("div");
       resetToast.className =
         "fixed bottom-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-2 z-50";
@@ -280,7 +358,7 @@ const ResumeBuilder = () => {
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
         </svg>
-        <span>Resume reset successfully! Start a new one.</span>
+        <span>Resume downloaded successfully! Credits remaining: ${credits - 1}</span>
       `;
       document.body.appendChild(resetToast);
       setTimeout(() => {
@@ -288,11 +366,12 @@ const ResumeBuilder = () => {
       }, 3000);
     } catch (error) {
       console.error("Error generating PDF:", error);
-      alert("There was an error generating your PDF. Please try again.");
+      setError(error instanceof Error ? error.message : 'Failed to generate PDF. Please try again.');
     } finally {
       setIsGeneratingPdf(false);
     }
   };
+
 
   const PreviewModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -307,39 +386,51 @@ const ResumeBuilder = () => {
             ×
           </button>
         </div>
+        {error && (
+          <AlertDialog>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDialogTitle>Error</AlertDialogTitle>
+            <AlertDialogDescription>{error}</AlertDialogDescription>
+          </AlertDialog>
+        )}
         <div className="resume-preview">
           <ResumePreview formData={formData} resumeId={resumeId} />
         </div>
-        <div className="mt-4 flex justify-end space-x-4">
-          <button
-            onClick={() => setShowPreview(false)}
-            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"
-            disabled={isGeneratingPdf}
-          >
-            Edit
-          </button>
-          <button
-            onClick={handleDownloadPdf}
-            disabled={isGeneratingPdf}
-            className={`px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center space-x-2
-              ${
-                isGeneratingPdf
-                  ? "opacity-75 cursor-not-allowed"
-                  : "hover:bg-blue-600"
-              }`}
-          >
-            {isGeneratingPdf ? (
-              <>
-                <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2" />
-                <span>Generating PDF...</span>
-              </>
-            ) : (
-              <>
-                <Download className="w-4 h-4 mr-2" />
-                <span>Download PDF</span>
-              </>
-            )}
-          </button>
+        <div className="mt-4 flex justify-between items-center">
+          <div className="text-sm text-gray-600">
+            Credits remaining: {credits}
+          </div>
+          <div className="flex space-x-4">
+            <button
+              onClick={() => setShowPreview(false)}
+              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"
+              disabled={isGeneratingPdf}
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleDownloadPdf}
+              disabled={isGeneratingPdf || credits === 0}
+              className={`px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center space-x-2
+                ${
+                  isGeneratingPdf || credits === 0
+                    ? "opacity-75 cursor-not-allowed"
+                    : "hover:bg-blue-600"
+                }`}
+            >
+              {isGeneratingPdf ? (
+                <>
+                  <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                  <span>Generating PDF...</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4 mr-2" />
+                  <span>Download PDF {credits && credits > 0 ? `(1 credit)` : `(No credits)`}</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -352,7 +443,8 @@ const ResumeBuilder = () => {
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />
-
+      <div className="flex-1">
+      <ResumeHeader/>
       <div className="flex-1 p-8">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
           {renderContent()}
@@ -439,6 +531,7 @@ const ResumeBuilder = () => {
             <span>Progress saved successfully!</span>
           </div>
         )}
+      </div>
       </div>
     </div>
   );

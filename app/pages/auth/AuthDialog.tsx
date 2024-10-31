@@ -7,8 +7,9 @@ import { Label } from '@/app/ui/label';
 import { Lock, Mail } from 'lucide-react';
 import { Input } from '@/app/ui/input';
 import { Button } from '@/app/ui/button';
-import { AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/app/ui/alert';
 import { AuthResponse } from '@/app/api/types/BackendTypes';
+import { setCredentials } from '@/redux/authSlice/authSlice';
+import { useAppDispatch } from '@/redux/store/store';
 
 interface AuthDialogProps {
   open: boolean;
@@ -20,7 +21,6 @@ interface AuthDialogProps {
 const AuthDialog: React.FC<AuthDialogProps> = ({
     open,
     onClose,
-    onLogin,
     onToggleMode,
   }) => {
     const [authMode, setAuthMode] = useState<'signin' | 'register'>('signin');
@@ -31,6 +31,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
     });
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const dispatch=useAppDispatch()
   
     const validateForm = () => {
       if (!formData.email || !formData.password) {
@@ -58,42 +59,48 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
       return true;
     };
   
-    const handleSubmit = async () => {
-      try {
-        setError(null);
-        if (!validateForm()) return;
-        
-        setLoading(true);
-        const endpoint = authMode === 'signin' ? '/api/auth/signin' : '/api/auth/register';
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        });
-        
-        const data: AuthResponse = await response.json();
-        console.log(data,"response data");
-        
-        
-        if (!response.ok) {
-          throw new Error(data.message || 'Authentication failed');
-        }
-        
-        localStorage.setItem('token', data.token);
-        onLogin();
-        onClose();
-      } catch (error) {
-        setError(error instanceof Error ? error.message : 'An unexpected error occurred');
-        console.error('Authentication error:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // In AuthDialog.tsx, update handleSubmit:
+const handleSubmit = async () => {
+  try {
+    setError(null);
+    if (!validateForm()) return;
+    
+    setLoading(true);
+    const endpoint = authMode === 'signin' ? '/api/auth/signin' : '/api/auth/register';
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password,
+      }),
+    });
+    
+    const data: AuthResponse = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Authentication failed');
+    }
+    
+    // Save to localStorage before dispatching
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    
+    dispatch(setCredentials({
+      user: data.user,
+      token: data.token
+    }));
+    
+    onClose();
+  } catch (error) {
+    setError(error instanceof Error ? error.message : 'An unexpected error occurred');
+    console.error('Authentication error:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const toggleAuthMode = () => {
     setAuthMode(authMode === 'signin' ? 'register' : 'signin');
@@ -102,7 +109,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
       onToggleMode();
     }
   };
-
+ 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
      <DialogContent className="sm:max-w-[600px]">
@@ -210,33 +217,5 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
   );
 };
 
-interface LogoutDialogProps {
-  open: boolean;
-  onClose: () => void;
-  onLogout: () => void;
-}
 
-const LogoutDialog: React.FC<LogoutDialogProps> = ({
-  open,
-  onClose,
-  onLogout,
-}) => {
-  return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-     <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure you want to sign out?</AlertDialogTitle>
-          <AlertDialogDescription>
-            You will need to sign in again to access your account.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onLogout}>Sign Out</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </Dialog>
-  );
-};
-
-export { AuthDialog, LogoutDialog };
+export { AuthDialog};
