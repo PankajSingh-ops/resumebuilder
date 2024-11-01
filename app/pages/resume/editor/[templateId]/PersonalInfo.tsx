@@ -123,14 +123,14 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   <User className="h-5 w-5 text-gray-600" />
                 </div>
                 <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  onBlur={() => handleBlur("firstName")}
-                  className="pl-10 w-full font-medium rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
-                  placeholder="John"
-                />
+          type="text"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+          onBlur={() => handleBlur("firstName")}
+          className="pl-10 w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
+          placeholder="John"
+        />
                 {errors.firstName && touched.firstName && (
                   <p className="mt-1 text-sm text-red-600">
                     {errors.firstName}
@@ -154,7 +154,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   value={formData.lastName}
                   onChange={handleChange}
                   onBlur={() => handleBlur("lastName")}
-                  className="pl-10 w-full font-medium rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                  className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
                   placeholder="Doe"
                 />
                 {errors.lastName && touched.lastName && (
@@ -181,7 +181,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   value={formData.email}
                   onChange={handleChange}
                   onBlur={() => handleBlur("email")}
-                  className="pl-10 w-full rounded-lg border font-medium border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                  className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
                   placeholder="john.doe@example.com"
                 />
                 {errors.email && touched.email && (
@@ -206,7 +206,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   onChange={handleChange}
                   onBlur={() => handleBlur("phone")}
                   pattern="^\+?[\d\s-()]{10,}$"
-                  className="pl-10 w-full rounded-lg border font-medium border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                  className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
                   placeholder="+1 (123) 456-7890"
                 />
                 {errors.phone && touched.phone && (
