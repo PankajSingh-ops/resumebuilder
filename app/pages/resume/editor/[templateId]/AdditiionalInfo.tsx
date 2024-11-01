@@ -276,7 +276,7 @@ const AdditionalInfo: React.FC<Props> = ({ formData, setFormData, onValidationCh
                 type="text"
                 value={awd.title}
                 onChange={(e) => handleInputChange('awards', awd.id, 'title', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 font-medium p-2.5 focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
@@ -285,7 +285,7 @@ const AdditionalInfo: React.FC<Props> = ({ formData, setFormData, onValidationCh
                 type="text"
                 value={awd.organization}
                 onChange={(e) => handleInputChange('awards', awd.id, 'organization', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 font-medium p-2.5 focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
@@ -294,7 +294,7 @@ const AdditionalInfo: React.FC<Props> = ({ formData, setFormData, onValidationCh
                 type="date"
                 value={awd.dateAwarded}
                 onChange={(e) => handleInputChange('awards', awd.id, 'dateAwarded', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 p-2.5 font-medium focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div className="col-span-2">
@@ -302,7 +302,7 @@ const AdditionalInfo: React.FC<Props> = ({ formData, setFormData, onValidationCh
               <textarea
                 value={awd.description}
                 onChange={(e) => handleInputChange('awards', awd.id, 'description', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 p-2.5 font-medium focus:ring-2 focus:ring-blue-500"
                 rows={3}
               />
             </div>
@@ -323,7 +323,7 @@ const AdditionalInfo: React.FC<Props> = ({ formData, setFormData, onValidationCh
               className={`flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
                 ${activeTab === tab.id 
                   ? 'bg-white text-blue-600 shadow-sm' 
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
+                  : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'}`}
             >
               <Icon size={18} />
               <span className="hidden md:inline">{tab.label}</span>
@@ -343,13 +343,13 @@ const AdditionalInfo: React.FC<Props> = ({ formData, setFormData, onValidationCh
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Icon className="h-6 w-6 text-blue-500" />
-                  <h3 className="text-lg font-semibold text-gray-800">
+                  <h3 className="text-lg font-semibold text-gray-900">
                     {getSingularName(activeTab)} #{index + 1}
                   </h3>
                 </div>
                 <button
                   onClick={() => handleRemoveItem(activeTab, item.id)}
-                  className="text-gray-400 hover:text-red-500 transition-colors"
+                  className="text-gray-700 hover:text-red-500 transition-colors"
                 >
                   <Trash2 size={20} />
                 </button>
@@ -365,7 +365,7 @@ const AdditionalInfo: React.FC<Props> = ({ formData, setFormData, onValidationCh
           type="button"
           onClick={() => handleAddItem(activeTab)}
           className="w-full py-3 px-4 rounded-lg border-2 border-dashed border-gray-300 
-            text-gray-600 hover:border-blue-500 hover:text-blue-500 
+            text-gray-900 hover:border-blue-500 hover:text-blue-500 
             transition-colors duration-200 flex items-center justify-center space-x-2"
         >
           <Plus size={20} />

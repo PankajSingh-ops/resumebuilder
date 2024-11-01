@@ -96,7 +96,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   return (
     <div className="space-y-8 animate-fadeIn">
       <div className="bg-white rounded-xl shadow-sm p-6 space-y-6">
-        <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+        <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
           <User className="h-6 w-6 text-blue-500" />
           Personal Information
         </h2>
@@ -115,12 +115,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* First Name */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-900">
                 First Name *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+                  <User className="h-5 w-5 text-gray-600" />
                 </div>
                 <input
                   type="text"
@@ -128,7 +128,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   value={formData.firstName}
                   onChange={handleChange}
                   onBlur={() => handleBlur("firstName")}
-                  className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                  className="pl-10 w-full font-medium rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
                   placeholder="John"
                 />
                 {errors.firstName && touched.firstName && (
@@ -141,12 +141,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
 
             {/* Last Name */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-900">
                 Last Name *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+                  <User className="h-5 w-5 text-gray-600" />
                 </div>
                 <input
                   type="text"
@@ -154,7 +154,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   value={formData.lastName}
                   onChange={handleChange}
                   onBlur={() => handleBlur("lastName")}
-                  className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                  className="pl-10 w-full font-medium rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
                   placeholder="Doe"
                 />
                 {errors.lastName && touched.lastName && (
@@ -168,12 +168,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Email */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-900">
                 Email Address *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                  <Mail className="h-5 w-5 text-gray-600" />
                 </div>
                 <input
                   type="email"
@@ -181,7 +181,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   value={formData.email}
                   onChange={handleChange}
                   onBlur={() => handleBlur("email")}
-                  className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                  className="pl-10 w-full rounded-lg border font-medium border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
                   placeholder="john.doe@example.com"
                 />
                 {errors.email && touched.email && (
@@ -192,12 +192,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
 
             {/* Phone */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-900">
                 Phone Number *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Phone className="h-5 w-5 text-gray-400" />
+                  <Phone className="h-5 w-5 text-gray-600" />
                 </div>
                 <input
                   type="tel"
@@ -206,7 +206,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   onChange={handleChange}
                   onBlur={() => handleBlur("phone")}
                   pattern="^\+?[\d\s-()]{10,}$"
-                  className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                  className="pl-10 w-full rounded-lg border font-medium border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
                   placeholder="+1 (123) 456-7890"
                 />
                 {errors.phone && touched.phone && (
@@ -218,12 +218,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
 
           {/* Date of Birth */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-900">
               Date of Birth *
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Calendar className="h-5 w-5 text-gray-400" />
+                <Calendar className="h-5 w-5 text-gray-600" />
               </div>
               <input
                 type="date"
@@ -245,12 +245,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* LinkedIn */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-900">
                 LinkedIn Profile
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Linkedin className="h-5 w-5 text-gray-400" />
+                  <Linkedin className="h-5 w-5 text-gray-600" />
                 </div>
                 <input
                   type="url"
@@ -266,12 +266,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
 
             {/* GitHub */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-900">
                 GitHub Profile
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <GithubIcon className="h-5 w-5 text-gray-400" />
+                  <GithubIcon className="h-5 w-5 text-gray-600" />
                 </div>
                 <input
                   type="url"
@@ -290,7 +290,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* City */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-900">
                 City
               </label>
               <input
@@ -306,7 +306,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
 
             {/* State */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-900">
                 State
               </label>
               <input
@@ -323,7 +323,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
 
           {/* Professional Summary */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-900">
               Professional Summary
             </label>
             <textarea
