@@ -6,6 +6,12 @@ interface IUser extends Document {
   password: string;
   credits: number;
   createdAt: Date;
+  firstName?: string;
+  lastName?: string;
+  gender?: string;
+  dateOfBirth?: Date;
+  currentStatus?: string;
+  profilePicture?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -28,6 +34,29 @@ const userSchema = new mongoose.Schema<IUser>({
     default: 10, // New users get 10 credits by default
     required: true,
     min: [0, 'Credits cannot be negative']
+  },
+  firstName: {
+    type: String,
+    trim: true
+  },
+  lastName: {
+    type: String,
+    trim: true
+  },
+  gender: {
+    type: String,
+    enum: ['Male', 'Female', 'Other']
+  },
+  dateOfBirth: {
+    type: Date
+  },
+  currentStatus: {
+    type: String,
+    enum: ['Student', 'Job', 'Freelancer', 'Unemployed']
+  },
+  profilePicture: {
+    type: String,
+    default: '/profilepics/boy1.png'
   },
   createdAt: {
     type: Date,

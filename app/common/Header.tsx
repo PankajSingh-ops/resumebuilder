@@ -85,9 +85,8 @@ export const Header: React.FC = () => {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
-  const isloggedIn=useAppSelector((state)=>state.auth.isLoggedIn)
-  const router=useRouter()
-
+  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,26 +105,37 @@ export const Header: React.FC = () => {
     setShowLogoutDialog(false);
   };
 
+  const ProfileButton = () => (
+    <button
+      onClick={() => router.push("/pages/profile")}
+      className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 hover:bg-blue-200 transition-colors"
+    >
+      <User className="w-5 h-5 text-blue-600" />
+    </button>
+  );
+
   const AuthButton = () => (
     <div className="relative group">
-      <button
-        className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
-        onClick={() =>
-          isloggedIn ? setShowLogoutDialog(true) : setShowAuthDialog(true)
-        }
-      >
-        {isloggedIn ? (
-          <>
-            <User className="w-5 h-5" />
+      {isLoggedIn ? (
+        <div className="flex items-center space-x-4">
+          <button
+            className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
+            onClick={() => setShowLogoutDialog(true)}
+          >
+            <LogOut className="w-5 h-5" />
             <span>Sign Out</span>
-          </>
-        ) : (
-          <>
-            <LogIn className="w-5 h-5" />
-            <span>Sign In</span>
-          </>
-        )}
-      </button>
+          </button>
+          <ProfileButton />
+        </div>
+      ) : (
+        <button
+          className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors px-4 py-2 rounded-lg hover:bg-blue-50"
+          onClick={() => setShowAuthDialog(true)}
+        >
+          <LogIn className="w-5 h-5" />
+          <span>Sign In</span>
+        </button>
+      )}
     </div>
   );
 
@@ -138,8 +148,8 @@ export const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={()=>router.push("/")}>
-            <div className="relative group" >
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => router.push("/")}>
+            <div className="relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 rounded-xl transform group-hover:rotate-6 transition-transform duration-300" />
               <div className="relative bg-white rounded-lg p-2">
                 <FileCheck className="w-8 h-8 text-blue-600" />
@@ -212,7 +222,7 @@ export const Header: React.FC = () => {
 
             <AuthButton />
 
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full flex items-center space-x-2 transition-colors shadow-lg hover:shadow-xl" onClick={()=>router.push("/pages/all-resume")}>
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full flex items-center space-x-2 transition-colors shadow-lg hover:shadow-xl" onClick={() => router.push("/pages/all-resume")}>
               <Download className="w-4 h-4" />
               <span>Create Resume</span>
             </button>
@@ -265,24 +275,29 @@ export const Header: React.FC = () => {
           ))}
 
           <div className="space-y-4">
+            {isLoggedIn && (
+              <button
+                className="w-full flex items-center space-x-2 p-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors"
+                onClick={() => router.push("/pages/profile")}
+              >
+                <User className="w-5 h-5" />
+                <span>Profile</span>
+              </button>
+            )}
             <button
               className="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors"
-              onClick={() =>
-                isloggedIn
-                  ? setShowLogoutDialog(true)
-                  : setShowAuthDialog(true)
-              }
+              onClick={() => isLoggedIn ? setShowLogoutDialog(true) : setShowAuthDialog(true)}
             >
               <div className="flex items-center space-x-2">
-                {isloggedIn ? (
+                {isLoggedIn ? (
                   <LogOut className="w-5 h-5" />
                 ) : (
                   <LogIn className="w-5 h-5" />
                 )}
-                <span>{isloggedIn ? "Sign Out" : "Sign In"}</span>
+                <span>{isLoggedIn ? "Sign Out" : "Sign In"}</span>
               </div>
             </button>
-            <button className="w-full bg-blue-600 text-white px-6 py-3 rounded-full flex items-center justify-center space-x-2 hover:bg-blue-700 transition-colors">
+            <button className="w-full bg-blue-600 text-white px-6 py-3 rounded-full flex items-center justify-center space-x-2 hover:bg-blue-700 transition-colors" onClick={() => router.push("/pages/all-resume")}>
               <Download className="w-4 h-4" />
               <span>Create Resume</span>
             </button>

@@ -10,6 +10,7 @@ import { Button } from '@/app/ui/button';
 import { AuthResponse } from '@/app/api/types/BackendTypes';
 import { setCredentials } from '@/redux/authSlice/authSlice';
 import { useAppDispatch } from '@/redux/store/store';
+import { useRouter } from 'next/navigation';
 
 interface AuthDialogProps {
   open: boolean;
@@ -32,6 +33,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const dispatch=useAppDispatch()
+    const router=useRouter()
   
     const validateForm = () => {
       if (!formData.email || !formData.password) {
@@ -88,6 +90,7 @@ const handleSubmit = async () => {
       user: data.user,
       token: data.token
     }));
+    router.push("/pages/profile")
     
     onClose();
   } catch (error) {
