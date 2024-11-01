@@ -57,6 +57,7 @@ const ResumeBuilder = () => {
       city: string;
       state: string;
       summary: string;
+      profilePic:string;
     };
     experiences: Experience[];
     education: EducationEntry[]; // Add this line
@@ -74,6 +75,7 @@ const ResumeBuilder = () => {
       city: "",
       state: "",
       summary: "",
+      profilePic:""
     },
     experiences: [],
     education: [], // Add this line
@@ -124,6 +126,7 @@ const ResumeBuilder = () => {
         city: "",
         state: "",
         summary: "",
+        profilePic:""
       },
       experiences: [],
       education: [],
