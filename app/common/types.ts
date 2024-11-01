@@ -12,6 +12,7 @@ export interface ResumeData {
     city: string;
     state: string;
     summary: string;
+    profilePic:string;
   };
   experiences: Experience[];
   education: EducationEntry[]

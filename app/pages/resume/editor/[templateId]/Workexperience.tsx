@@ -374,7 +374,7 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({
                             )
                           }
                           disabled={experience.current}
-                          className="w-full pl-8 md:pl-10 rounded-lg border border-gray-300 p-3 md:p-2.5 text-sm md:text-base focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                          className="w-full pl-8 md:pl-10 rounded-lg border border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
                         />
                       </div>
                       <div className="mt-2">

@@ -4,6 +4,8 @@ import { ResumeData } from '@/app/common/types';
 import SecondResume from './SecondResume';
 import ThirdResume from './ThirdResume';
 import FourthResume from './FourthResume';
+import FifthResume from './FifthResume';
+import SixthResume from './SixthResume';
 
 interface ResumePreviewProps {
     formData: ResumeData;
@@ -24,6 +26,11 @@ const ResumePreview:React.FC<ResumePreviewProps> = ({ formData, resumeId }) => {
         return <ThirdResume formData={formData}  />;
       case 4:
         return <FourthResume formData={formData}  />;
+      case 5:
+        return <FifthResume formData={formData}  />;
+      case 6:
+        return <SixthResume formData={formData}  />;
+
       default:
         return (
           <div className="mt-4">
