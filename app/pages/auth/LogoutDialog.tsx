@@ -2,6 +2,7 @@ import { AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDe
 import { logout } from "@/redux/authSlice/authSlice";
 import { useAppDispatch } from "@/redux/store/store";
 import { Dialog } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 interface LogoutDialogProps {
     open: boolean;
@@ -13,9 +14,11 @@ interface LogoutDialogProps {
     open,
     onClose,
   }) => {
+    const router=useRouter()
     const dispatch=useAppDispatch()
     const handleLogout = () => {
         dispatch(logout());
+        router.push("/")
         onClose();
       };
     return (

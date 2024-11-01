@@ -15,9 +15,9 @@ import {
 } from "lucide-react";
 import { NavItem } from "./types";
 import { AuthDialog } from "../pages/auth/AuthDialog";
-import { useAppSelector } from "@/redux/store/store";
 import { LogoutDialog } from "../pages/auth/LogoutDialog";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const navigation: NavItem[] = [
   {
@@ -84,8 +84,13 @@ export const Header: React.FC = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const token = Cookies.get('token');
+    setIsLoggedIn(!!token);
+  }, []);
 
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+
   const router = useRouter();
 
   useEffect(() => {
