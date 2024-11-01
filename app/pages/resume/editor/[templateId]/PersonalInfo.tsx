@@ -123,14 +123,14 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   <User className="h-5 w-5 text-gray-600" />
                 </div>
                 <input
-          type="text"
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-          onBlur={() => handleBlur("firstName")}
-          className="pl-10 w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
-          placeholder="John"
-        />
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  onBlur={() => handleBlur("firstName")}
+                  className="pl-10 w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
+                  placeholder="John"
+                />
                 {errors.firstName && touched.firstName && (
                   <p className="mt-1 text-sm text-red-600">
                     {errors.firstName}
@@ -154,7 +154,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   value={formData.lastName}
                   onChange={handleChange}
                   onBlur={() => handleBlur("lastName")}
-                  className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                  className="pl-10 w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
                   placeholder="Doe"
                 />
                 {errors.lastName && touched.lastName && (
@@ -181,7 +181,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   value={formData.email}
                   onChange={handleChange}
                   onBlur={() => handleBlur("email")}
-                  className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                  className="pl-10 w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
                   placeholder="john.doe@example.com"
                 />
                 {errors.email && touched.email && (
@@ -206,7 +206,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   onChange={handleChange}
                   onBlur={() => handleBlur("phone")}
                   pattern="^\+?[\d\s-()]{10,}$"
-                  className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                  className="pl-10 w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
                   placeholder="+1 (123) 456-7890"
                 />
                 {errors.phone && touched.phone && (
@@ -231,7 +231,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                 value={formData.dateOfBirth}
                 onChange={handleChange}
                 onBlur={() => handleBlur("dateOfBirth")}
-                className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                className="pl-10 w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
               />
               {errors.dateOfBirth && touched.dateOfBirth && (
                 <p className="mt-1 text-sm text-red-600">
@@ -258,7 +258,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   value={formData.linkedin}
                   onChange={handleChange}
                   onBlur={() => handleBlur("linkedin")}
-                  className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                  className="pl-10 w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
                   placeholder="https://linkedin.com/in/johndoe"
                 />
               </div>
@@ -279,7 +279,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   value={formData.github}
                   onChange={handleChange}
                   onBlur={() => handleBlur("github")}
-                  className="pl-10 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                  className="pl-10 w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
                   placeholder="https://github.com/johndoe"
                 />
               </div>
@@ -299,7 +299,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                 value={formData.city}
                 onChange={handleChange}
                 onBlur={() => handleBlur("city")}
-                className="pl-3 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                className="pl-3 w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
                 placeholder="New York"
               />
             </div>
@@ -315,7 +315,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                 value={formData.state}
                 onChange={handleChange}
                 onBlur={() => handleBlur("state")}
-                className="pl-3 w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+                className="pl-3 w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
                 placeholder="NY"
               />
             </div>
@@ -332,7 +332,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
               onChange={handleChange}
               onBlur={() => handleBlur("summary")}
               rows={4}
-              className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+              className="w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white resize-y"
               placeholder="Brief overview of your professional background and career objectives..."
             />
           </div>
