@@ -79,7 +79,7 @@ const ResumeTemplateSelector = () => {
   });
 
   const handleTemplateSelect = (templateId: number) => {
-    router.push(`/pages/resume/editor/${templateId}`);
+    router.push(`/pages/resume/${templateId}`);
   };
 
   return (

@@ -15,9 +15,9 @@ import {
 import PersonalInfo from "./PersonalInfo";
 import {
   AdditionalInfoData,
-  EducationEntry,
   Experience,
   MenuItem,
+  ResumeData,
   SkillsData,
 } from "@/app/common/types";
 import WorkExperience from "./Workexperience";
@@ -30,9 +30,10 @@ import ResumePreview from "@/app/pages/all-resume/list/previewResume";
 import Education from "./Education";
 import ResumeHeader from "@/app/ui/resume/ResumeHeader";
 import { AlertDialog, AlertDialogDescription, AlertDialogTitle } from "@/app/ui/alert";
-import { useAppDispatch, useAppSelector } from "@/redux/store/store";
+import { useAppDispatch } from "@/redux/store/store";
 import { decrementCredits, fetchCredits } from "@/app/routes/Credits";
 import { updateCredits } from "@/redux/authSlice/authSlice";
+import Cookies from "js-cookie";
 
 // Menu Items Configuration
 const menuItems: MenuItem[] = [
@@ -44,26 +45,8 @@ const menuItems: MenuItem[] = [
 ];
 
 // Main Resume Builder Component
-const ResumeBuilder = () => {
-  const [formData, setFormData] = useState<{
-    personal: {
-      firstName: string;
-      lastName: string;
-      dateOfBirth: string;
-      phone: string;
-      email: string;
-      linkedin: string;
-      github: string;
-      city: string;
-      state: string;
-      summary: string;
-      profilePic:string;
-    };
-    experiences: Experience[];
-    education: EducationEntry[]; // Add this line
-    skills: SkillsData;
-    additional: AdditionalInfoData;
-  }>({
+const ResumeBuilder = ({ initialData = null }) => {
+  const [formData, setFormData] = useState<ResumeData>(initialData||{
     personal: {
       firstName: "",
       lastName: "",
@@ -111,7 +94,7 @@ const ResumeBuilder = () => {
   const [error, setError] = useState<string | null>(null);
   const params = useParams();
   const resumeId = params.templateId;
-  const token=useAppSelector((state)=>state.auth.token)
+  const token=Cookies.get('token')
   const dispatch=useAppDispatch()
   const resetFormData = () => {
     setFormData({

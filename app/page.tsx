@@ -2,11 +2,16 @@
 import Link from "next/link"
 import { Header } from "./common/Header"
 import { Footer } from "./common/Footer"
-import { useAppSelector } from "@/redux/store/store"
 import { ArrowRight, FileText, Star, Users } from "lucide-react"
+import { useEffect, useState } from "react"
+import Cookies from "js-cookie"
 
 export default function Home() {
-  const user = useAppSelector((state) => state.auth.user)
+  const [user, setIsUser]=useState(false)
+  useEffect(() => {
+    const token = Cookies.get('token');
+    setIsUser(!!token);
+  }, [user]);
 
   return (
     <div className="min-h-screen flex flex-col">

@@ -108,6 +108,7 @@ export const Header: React.FC = () => {
 
   const handleLogout = () => {
     setShowLogoutDialog(false);
+    setIsLoggedIn(false)
   };
 
   const ProfileButton = () => (
