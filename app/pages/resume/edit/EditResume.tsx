@@ -1,16 +1,18 @@
 'use client'
 import React, { useState, useCallback, useEffect } from "react";
 import { FileUp, FilePlus, Upload, Loader2, ChevronRight } from "lucide-react";
-import ResumeBuilder from "../editor/[templateId]/page";
+import { ResumeData } from "@/app/common/types";
 
-const IntegratedResumePage = () => {
-  const [showBuilder, setShowBuilder] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [selectedFile, setSelectedFile] = useState<any>(null);
+interface IntegratedResumePageProps {
+  setFormData?: (data: ResumeData) => void;
+  setShowEdit?: (show: boolean) => void;
+}
+
+const IntegratedResumePage: React.FC<IntegratedResumePageProps> = ({ setFormData, setShowEdit }) => {
+  const [selectedFile, setSelectedFile] = useState<File>();
   const [error, setError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [initialFormData, setInitialFormData] = useState(null);
   const [showUpload, setShowUpload] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -18,7 +20,44 @@ const IntegratedResumePage = () => {
     setIsMounted(true);
   }, []);
 
-  const validateFile = (file:File) => {
+  const resetFormData = () => {
+    const emptyFormData: ResumeData = {
+      personal: {
+        firstName: "",
+        lastName: "",
+        dateOfBirth: "",
+        phone: "",
+        email: "",
+        linkedin: "",
+        github: "",
+        city: "",
+        state: "",
+        summary: "",
+        profilePic: ""
+      },
+      experiences: [],
+      education: [],
+      skills: {
+        technicalSkills: [],
+        softSkills: [],
+        certifications: [],
+        languages: [],
+        hobbies: [],
+      },
+      additional: {
+        publications: [],
+        patents: [],
+        memberships: [],
+        awards: [],
+      },
+    };
+    
+    if (setFormData) {
+      setFormData(emptyFormData);
+    }
+  };
+
+  const validateFile = (file: File) => {
     const allowedTypes = [
       "application/pdf",
       "application/msword",
@@ -39,8 +78,7 @@ const IntegratedResumePage = () => {
     return true;
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleFileUpload = async (file:any) => {
+  const handleFileUpload = async (file: File) => {
     if (!validateFile(file)) return;
 
     setError("");
@@ -63,33 +101,31 @@ const IntegratedResumePage = () => {
         return;
       }
 
-      setInitialFormData(data);
-      setShowBuilder(true);
+      if (setFormData) {
+        setFormData(data);
+      }
+      setShowEdit?.(false); // Fixed: Using optional chaining
     } catch (error) {
       console.log(error);
-      
       setError("Failed to process resume. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDragOver = useCallback((e:any) => {
+  const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(true);
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDragLeave = useCallback((e:any) => {
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDrop = useCallback((e:any) => {
+  const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
@@ -100,20 +136,20 @@ const IntegratedResumePage = () => {
     }
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleInputChange = (event:any) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       handleFileUpload(file);
     }
   };
 
+  const handleGetStarted = () => {
+    resetFormData();
+    setShowEdit?.(false); // Fixed: Using optional chaining
+  };
+
   if (!isMounted) {
     return null;
-  }
-
-  if (showBuilder) {
-    return <ResumeBuilder initialData={initialFormData} />;
   }
 
   return (
@@ -128,10 +164,7 @@ const IntegratedResumePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div 
               className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden cursor-pointer"
-              onClick={() => {
-                setInitialFormData(null);
-                setShowBuilder(true);
-              }}
+              onClick={handleGetStarted}
             >
               <div className="p-8 md:p-12">
                 <div className="flex flex-col items-center text-center space-y-6">
@@ -231,7 +264,7 @@ const IntegratedResumePage = () => {
                     className="px-6 py-3 border-2 border-gray-200 hover:border-gray-300 text-gray-700 font-semibold rounded-lg transition-colors duration-300"
                     onClick={() => {
                       setShowUpload(false);
-                      setSelectedFile(null);
+                      setSelectedFile(undefined);
                       setError("");
                     }}
                   >
@@ -240,7 +273,7 @@ const IntegratedResumePage = () => {
                   {selectedFile && !isLoading && (
                     <button 
                       className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors duration-300 flex items-center gap-2"
-                      onClick={() => setShowBuilder(true)}
+                      onClick={() => setShowEdit?.(false)} // Fixed: Using optional chaining
                     >
                       Continue <ChevronRight className="w-5 h-5" />
                     </button>

@@ -34,6 +34,7 @@ import { useAppDispatch } from "@/redux/store/store";
 import { decrementCredits, fetchCredits } from "@/app/routes/Credits";
 import { updateCredits } from "@/redux/authSlice/authSlice";
 import Cookies from "js-cookie";
+import IntegratedResumePage from "../../edit/EditResume";
 
 // Menu Items Configuration
 const menuItems: MenuItem[] = [
@@ -45,8 +46,8 @@ const menuItems: MenuItem[] = [
 ];
 
 // Main Resume Builder Component
-const ResumeBuilder = ({ initialData = null }) => {
-  const [formData, setFormData] = useState<ResumeData>(initialData||{
+const ResumeBuilder = () => {
+  const [formData, setFormData] = useState<ResumeData>({
     personal: {
       firstName: "",
       lastName: "",
@@ -92,6 +93,7 @@ const ResumeBuilder = ({ initialData = null }) => {
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [credits, setCredits] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showEdit,setShowEdit]=useState(true);
   const params = useParams();
   const resumeId = params.templateId;
   const token=Cookies.get('token')
@@ -379,6 +381,12 @@ const ResumeBuilder = ({ initialData = null }) => {
       </div>
     </div>
   );
+  if(showEdit){
+    return <IntegratedResumePage 
+    setFormData={setFormData}
+    setShowEdit={setShowEdit}
+  />
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
