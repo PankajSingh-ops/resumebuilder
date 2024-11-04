@@ -5,6 +5,7 @@ import { Footer } from "./common/Footer"
 import { ArrowRight, FileText, Star, Users } from "lucide-react"
 import { useEffect, useState } from "react"
 import Cookies from "js-cookie"
+import FeaturesGrid from "./ui/home/FeatureCard"
 
 export default function Home() {
   const [user, setIsUser]=useState(false)
@@ -77,6 +78,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+        <FeaturesGrid/>
 
         {/* Call to Action - Updated for better contrast */}
         <section className="py-20 bg-blue-50">

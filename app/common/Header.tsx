@@ -53,9 +53,9 @@ const navigation: NavItem[] = [
         description: "Get help writing your resume content",
       },
       {
-        title: "Custom Sections",
-        href: "/features/custom-sections",
-        description: "Create unique sections for your resume",
+        title: "Crete Cover Letter",
+        href: "/pages/cover-letter/edit",
+        description: "Create unique sections for your cover letter",
       },
     ],
   },
@@ -147,7 +147,7 @@ export const Header: React.FC = () => {
 
   return (
     <header
-      className={`w-full z-50 transition-all duration-300 relative ${
+      className={`w-full z-50 transition-all duration-300 sticky top-0 ${
         isScrolled ? "bg-white/95 backdrop-blur-sm shadow-lg" : "bg-transparent"
       }`}
     >
