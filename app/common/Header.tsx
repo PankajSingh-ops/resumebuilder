@@ -49,7 +49,7 @@ const navigation: NavItem[] = [
     submenu: [
       {
         title: "AI Writing Assistant",
-        href: "/features/ai-assistant",
+        href: "/pages/analyzer",
         description: "Get help writing your resume content",
       },
       {
