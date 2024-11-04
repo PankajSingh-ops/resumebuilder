@@ -10,6 +10,7 @@ import {
   FileCheck
 } from 'lucide-react';
 import { FooterSection, SocialLink } from './types';
+import { useRouter } from 'next/navigation';
 
 const footerSections: FooterSection[] = [
   {
@@ -33,9 +34,9 @@ const footerSections: FooterSection[] = [
   {
     title: 'Company',
     links: [
-      { title: 'About Us', href: '/about' },
+      { title: 'About Us', href: '/about-us' },
       { title: 'Careers', href: '/careers' },
-      { title: 'Contact', href: '/contact' },
+      { title: 'Contact', href: '/contact-us' },
       { title: 'Privacy Policy', href: '/privacy' }
     ]
   }
@@ -49,6 +50,7 @@ const socialLinks: SocialLink[] = [
 ];
 
 export const Footer: React.FC = () => {
+  const router=useRouter()
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
@@ -69,8 +71,8 @@ export const Footer: React.FC = () => {
               {socialLinks.map((social) => (
                 <a
                   key={social.platform}
-                  href={social.href}
-                  className="text-gray-400 hover:text-blue-400 transition-colors"
+                  onClick={()=>router.push(`${social.href}`)}
+                  className="text-gray-400 hover:text-blue-400 transition-colors cursor-pointer"
                   aria-label={social.platform}
                 >
                   {social.icon}
@@ -87,8 +89,8 @@ export const Footer: React.FC = () => {
                 {section.links.map((link) => (
                   <li key={link.title}>
                     <a
-                      href={link.href}
-                      className="text-gray-400 hover:text-blue-400 transition-colors"
+                      onClick={()=>router.push(`${link.href}`)}
+                      className="text-gray-400 hover:text-blue-400 transition-colors cursor-pointer"
                     >
                       {link.title}
                     </a>
