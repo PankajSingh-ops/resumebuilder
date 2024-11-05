@@ -4,7 +4,7 @@ export const templates = [
       title: "Professional Business Cover Letter",
       category: "Professional",
       tags: ["Business", "Corporate", "Professional"],
-      image: "https://marketplace.canva.com/EAFhHrjw0Qk/1/0/1131w/canva-black-and-white-simple-classic-professional-cover-letter-G55SxrJRkKo.jpg",
+      image: "https://www.jobhero.com/resources/wp-content/uploads/2024/05/cleaner-cover-letter-example-JH.svg",
       description: "Perfect for corporate and business professionals"
     },
     {

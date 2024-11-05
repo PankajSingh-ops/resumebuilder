@@ -115,7 +115,7 @@ const CoverLetterGenerator = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Professional Cover Letter Generator</h1>
+          <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 animate-gradient">Professional Cover Letter Generator</h1>
           <p className="text-gray-600">Create a compelling cover letter in minutes with AI assistance</p>
         </div>
 

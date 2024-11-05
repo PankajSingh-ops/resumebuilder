@@ -1,6 +1,7 @@
 import React from 'react'
 import { TeamMember } from '../interface/AboutUs';
 import { Header } from '../common/Header';
+import { Footer } from '../common/Footer';
 
 function AboutUs() {
     const teamMembers: TeamMember[] = [
@@ -88,6 +89,7 @@ function AboutUs() {
             </div>
           </div>
         </div>
+        <Footer/>
         </>
       );
     };

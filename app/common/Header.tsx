@@ -7,11 +7,11 @@ import {
   X,
   Download,
   FileCheck,
-  Star,
-  BookOpen,
   LogIn,
   LogOut,
   User,
+  LetterText,
+  ScanBarcode,
 } from "lucide-react";
 import { NavItem } from "./types";
 import { AuthDialog } from "../pages/auth/AuthDialog";
@@ -21,7 +21,7 @@ import Cookies from "js-cookie";
 
 const navigation: NavItem[] = [
   {
-    title: "Templates",
+    title: "Resume",
     href: "/templates",
     icon: <Layout className="w-5 h-5" />,
     submenu: [
@@ -43,9 +43,9 @@ const navigation: NavItem[] = [
     ],
   },
   {
-    title: "Features",
+    title: "Letters",
     href: "/features",
-    icon: <Star className="w-5 h-5" />,
+    icon: <LetterText className="w-5 h-5" />,
     submenu: [
       {
         title: "AI Writing Assistant",
@@ -60,13 +60,13 @@ const navigation: NavItem[] = [
     ],
   },
   {
-    title: "Resources",
-    href: "/resources",
-    icon: <BookOpen className="w-5 h-5" />,
+    title: "Analyze",
+    href: "/pages/analyzer",
+    icon: <ScanBarcode className="w-5 h-5" />,
     submenu: [
       {
-        title: "Resume Guide",
-        href: "/resources/guide",
+        title: "Analyze resume",
+        href: "/pages/analyzer",
         description: "Learn how to write an effective resume",
       },
       {
@@ -207,8 +207,8 @@ export const Header: React.FC = () => {
                       {item.submenu.map((subItem) => (
                         <a
                           key={subItem.title}
-                          href={subItem.href}
-                          className="block px-4 py-3 rounded-lg hover:bg-blue-50 transition-colors"
+                          onClick={()=>router.push(`${subItem.href}`)}
+                          className="block px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors"
                         >
                           <div className="font-medium text-gray-700">
                             {subItem.title}
@@ -269,8 +269,8 @@ export const Header: React.FC = () => {
                   {item.submenu.map((subItem) => (
                     <a
                       key={subItem.title}
-                      href={subItem.href}
-                      className="block px-4 py-2 text-gray-600 hover:text-blue-600 rounded-lg hover:bg-blue-50/50"
+                      onClick={()=>router.push(`${subItem.href}`)}
+                      className="block px-4 py-2 text-gray-600 cursor-pointer hover:text-blue-600 rounded-lg hover:bg-blue-50/50"
                     >
                       {subItem.title}
                     </a>

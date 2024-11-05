@@ -7,6 +7,9 @@ import { TextInput } from '../../ui/analyzer/Text';
 import Cookies from 'js-cookie';
 import { Footer } from '@/app/common/Footer';
 import ResumeHeader from '@/app/ui/resume/ResumeHeader';
+import { decrementCredits } from '@/app/routes/Credits';
+import { useAppDispatch } from '@/redux/store/store';
+import { updateCredits } from '@/redux/authSlice/authSlice';
 
 interface AnalysisResult {
   points: number;
@@ -19,12 +22,29 @@ const ResumeAnalyzer: React.FC = () => {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const dispatch=useAppDispatch()
   const token = Cookies.get('token');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
       setError(null);
+    }
+  };
+  const updateUserCredits = async () => {
+    if (!token) {
+      setError('Authentication required');
+      throw new Error('Authentication required');
+    }
+
+    try {
+      const newCredits = await decrementCredits(token);
+      dispatch(updateCredits(newCredits));
+      return newCredits;
+    } catch (error) {
+      console.error('Error updating credits:', error);
+      setError(error instanceof Error ? error.message : 'Failed to update credits');
+      throw error;
     }
   };
 
@@ -60,6 +80,7 @@ const ResumeAnalyzer: React.FC = () => {
           positive: data.positive,
           negative: data.negative
         };
+        await updateUserCredits()
         setResult(analysisResult);
         
         // Use useEffect or move console.log after state update if you need to see updated result
@@ -90,8 +111,10 @@ const ResumeAnalyzer: React.FC = () => {
   return (
     <>
     <ResumeHeader/>
-    <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
+    <div className="flex flex-col gap-10 items-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
+    <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 animate-gradient">Professional Cover Letter Generator</h1>
       <Card className="w-full max-w-5xl">
+        
         <CardContent className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Upload Section */}
