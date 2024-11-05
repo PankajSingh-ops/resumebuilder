@@ -397,60 +397,62 @@ const ResumeBuilder = () => {
       />
       <div className="flex-1">
       <ResumeHeader/>
-      <div className="flex-1 p-8">
+      <div className="flex-1 p-2 md:p-4 lg:p-8">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
           {renderContent()}
 
           {/* Navigation Buttons */}
           <div className="mt-8 flex justify-between">
-            <button
-              type="button"
-              onClick={() => {
-                const currentIndex = menuItems.findIndex(
-                  (item) => item.id === currentPage
-                );
-                if (currentIndex > 0) {
-                  setCurrentPage(menuItems[currentIndex - 1].id);
-                }
-              }}
-              disabled={
-                menuItems.findIndex((item) => item.id === currentPage) === 0
-              }
-              className={`flex items-center space-x-2 px-6 py-2 rounded-lg border border-gray-300 transition-colors duration-200 ${
-                menuItems.findIndex((item) => item.id === currentPage) === 0
-                  ? "text-gray-400 bg-gray-50 cursor-not-allowed"
-                  : "text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              <ChevronLeft size={20} />
-              <span>Previous</span>
-            </button>
+          <button
+  type="button"
+  onClick={() => {
+    const currentIndex = menuItems.findIndex(
+      (item) => item.id === currentPage
+    );
+    if (currentIndex > 0) {
+      setCurrentPage(menuItems[currentIndex - 1].id);
+    }
+  }}
+  disabled={
+    menuItems.findIndex((item) => item.id === currentPage) === 0
+  }
+  className={`flex items-center space-x-2 px-4 py-1 md:px-6 md:py-2 rounded-lg border border-gray-300 transition-colors duration-200 ${
+    menuItems.findIndex((item) => item.id === currentPage) === 0
+      ? "text-gray-400 bg-gray-50 cursor-not-allowed"
+      : "text-gray-600 hover:bg-gray-50"
+  }`}
+>
+  <ChevronLeft size={20} />
+  <span className="text-xs md:text-base">Previous</span>
+</button>
 
-            {currentPage === menuItems[menuItems.length - 1].id ? (
-              <button
-                onClick={() => setShowPreview(true)}
-                className="flex items-center space-x-2 px-8 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors duration-200 shadow-sm"
-              >
-                <Check size={20} />
-                <span>Complete Resume</span>
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  const currentIndex = menuItems.findIndex(
-                    (item) => item.id === currentPage
-                  );
-                  if (currentIndex < menuItems.length - 1) {
-                    setCurrentPage(menuItems[currentIndex + 1].id);
-                  }
-                }}
-                className="flex items-center space-x-2 px-6 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200 shadow-sm"
-              >
-                <span>Next</span>
-                <ChevronRight size={20} />
-              </button>
-            )}
+
+{currentPage === menuItems[menuItems.length - 1].id ? (
+  <button
+    onClick={() => setShowPreview(true)}
+    className="flex items-center space-x-2 px-4 py-1 md:px-8 md:py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors duration-200 shadow-sm"
+  >
+    <Check size={20} />
+    <span className="text-xs md:text-base">Complete Resume</span>
+  </button>
+) : (
+  <button
+    type="button"
+    onClick={() => {
+      const currentIndex = menuItems.findIndex(
+        (item) => item.id === currentPage
+      );
+      if (currentIndex < menuItems.length - 1) {
+        setCurrentPage(menuItems[currentIndex + 1].id);
+      }
+    }}
+    className="flex items-center space-x-2 px-4 py-1 md:px-6 md:py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200 shadow-sm"
+  >
+    <span className="text-xs md:text-base">Next</span>
+    <ChevronRight size={20} />
+  </button>
+)}
+
           </div>
 
           <ProgressBar

@@ -220,7 +220,7 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({
                 }`}
             >
               <Icon size={16} className="md:w-5 md:h-5" />
-              <span>{tab.label}</span>
+              <span className="hidden md:inline">{tab.label}</span>
             </button>
           );
         })}

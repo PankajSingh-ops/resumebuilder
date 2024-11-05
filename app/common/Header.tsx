@@ -48,8 +48,8 @@ const navigation: NavItem[] = [
     icon: <LetterText className="w-5 h-5" />,
     submenu: [
       {
-        title: "AI Writing Assistant",
-        href: "/pages/analyzer",
+        title: "Templates",
+        href: "/pages/cover-letter",
         description: "Get help writing your resume content",
       },
       {
