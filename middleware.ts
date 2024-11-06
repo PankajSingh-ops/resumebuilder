@@ -7,13 +7,16 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.redirect(new URL('/pages/auth', request.url));
 }
 
 export const config = {
   matcher: [
     '/pages/resume/:path*',
     '/pages/profile',
+    '/pages/analyzer',
+    '/pages/cover-letter/edit',
+    '/pages/cover-letter/edit/:path*'
 
     
   ]

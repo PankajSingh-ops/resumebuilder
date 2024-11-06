@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import React, { useState, useEffect } from "react";
 import {
   UserCircle2,
@@ -84,6 +83,7 @@ const ProfilePage = () => {
   });
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSelectingProfilePic, setIsSelectingProfilePic] = useState(false);
 
@@ -113,6 +113,7 @@ const ProfilePage = () => {
   };
 
   const handleUpdateProfile = async (field: keyof typeof editMode) => {
+    setIsUpdating(true);
     try {
       const data = await fetchWithAuth("/api/profile", {
         method: "PUT",
@@ -127,10 +128,13 @@ const ProfilePage = () => {
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update profile");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   const handleProfilePictureUpdate = async (imageUrl: string) => {
+    setIsUpdating(true);
     try {
       const updatedProfile = { ...profile, profilePicture: imageUrl };
       const data = await fetchWithAuth("/api/profile", {
@@ -145,6 +149,8 @@ const ProfilePage = () => {
       setError(
         err instanceof Error ? err.message : "Failed to update profile picture"
       );
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -232,7 +238,13 @@ const ProfilePage = () => {
     <>
       <Header />
       <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center p-4">
-        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+        {isUpdating && (
+          <div className="absolute top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+          </div>
+        )}
+
+        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden relative">
           {error && (
             <div
               className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"

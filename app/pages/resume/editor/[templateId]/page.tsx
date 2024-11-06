@@ -59,7 +59,8 @@ const ResumeBuilder = () => {
       city: "",
       state: "",
       summary: "",
-      profilePic:""
+      profileImage:"",
+      jobTitle:""
     },
     experiences: [],
     education: [], // Add this line
@@ -111,7 +112,8 @@ const ResumeBuilder = () => {
         city: "",
         state: "",
         summary: "",
-        profilePic:""
+        profileImage:"",
+        jobTitle:""
       },
       experiences: [],
       education: [],
@@ -138,6 +140,8 @@ const ResumeBuilder = () => {
     setCurrentPage("personal");
     localStorage.removeItem("resumeBuilderDraft");
   };
+  console.log(formData,"formdata");
+  
   useEffect(() => {
     const loadCredits = async () => {
       if (!token) return;

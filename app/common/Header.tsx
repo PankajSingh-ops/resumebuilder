@@ -1,7 +1,6 @@
-"use client";
+"use client"
 import React, { useState, useEffect } from "react";
 import {
-  Layout,
   ChevronDown,
   Menu,
   X,
@@ -10,73 +9,12 @@ import {
   LogIn,
   LogOut,
   User,
-  LetterText,
-  ScanBarcode,
 } from "lucide-react";
-import { NavItem } from "./types";
 import { AuthDialog } from "../pages/auth/AuthDialog";
 import { LogoutDialog } from "../pages/auth/LogoutDialog";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-
-const navigation: NavItem[] = [
-  {
-    title: "Resume",
-    href: "/templates",
-    icon: <Layout className="w-5 h-5" />,
-    submenu: [
-      {
-        title: "Professional",
-        href: "/templates/professional",
-        description: "Clean and modern templates for corporate jobs",
-      },
-      {
-        title: "Creative",
-        href: "/templates/creative",
-        description: "Stand out with unique designs for creative fields",
-      },
-      {
-        title: "Academic",
-        href: "/templates/academic",
-        description: "Specialized templates for academic positions",
-      },
-    ],
-  },
-  {
-    title: "Letters",
-    href: "/features",
-    icon: <LetterText className="w-5 h-5" />,
-    submenu: [
-      {
-        title: "Templates",
-        href: "/pages/cover-letter",
-        description: "Get help writing your resume content",
-      },
-      {
-        title: "Crete Cover Letter",
-        href: "/pages/cover-letter/edit",
-        description: "Create unique sections for your cover letter",
-      },
-    ],
-  },
-  {
-    title: "Analyze",
-    href: "/pages/analyzer",
-    icon: <ScanBarcode className="w-5 h-5" />,
-    submenu: [
-      {
-        title: "Analyze resume",
-        href: "/pages/analyzer",
-        description: "Learn how to write an effective resume",
-      },
-      {
-        title: "Career Blog",
-        href: "/resources/blog",
-        description: "Tips and advice for job seekers",
-      },
-    ],
-  },
-];
+import { navigation } from "../data/Navigation";
 
 export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -89,7 +27,6 @@ export const Header: React.FC = () => {
     const token = Cookies.get('token');
     setIsLoggedIn(!!token);
   }, []);
-
 
   const router = useRouter();
 
@@ -151,10 +88,13 @@ export const Header: React.FC = () => {
         isScrolled ? "bg-white/95 backdrop-blur-sm shadow-lg" : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="w-full mx-auto px-4 sm:px-6">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => router.push("/")}>
+          <div
+            className="flex items-center space-x-3 cursor-pointer"
+            onClick={() => router.push("/")}
+          >
             <div className="relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 rounded-xl transform group-hover:rotate-6 transition-transform duration-300" />
               <div className="relative bg-white rounded-lg p-2">
@@ -207,7 +147,7 @@ export const Header: React.FC = () => {
                       {item.submenu.map((subItem) => (
                         <a
                           key={subItem.title}
-                          onClick={()=>router.push(`${subItem.href}`)}
+                          onClick={() => router.push(`${subItem.href}`)}
                           className="block px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors"
                         >
                           <div className="font-medium text-gray-700">
@@ -250,26 +190,51 @@ export const Header: React.FC = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden transition-all duration-300 ${
-          isMobileMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
-        } overflow-hidden bg-gray-50`}
+        className={`md:hidden fixed top-0 left-0 w-full h-full bg-white z-50 overflow-auto transition-all duration-300 ${
+          isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
       >
         <div className="px-4 py-6 space-y-4">
           {navigation.map((item) => (
             <div key={item.title} className="space-y-2">
-              <button className="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors">
+              <button
+                className="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors"
+                onClick={() => {
+                  if (item.submenu) {
+                    setActiveDropdown(
+                      activeDropdown === item.title ? null : item.title
+                    );
+                  } else {
+                    router.push(item.href);
+                    setIsMobileMenuOpen(false);
+                  }
+                }}
+              >
                 <div className="flex items-center space-x-2">
                   {item.icon}
                   <span>{item.title}</span>
                 </div>
-                {item.submenu && <ChevronDown className="w-4 h-4" />}
+                {item.submenu && (
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-300 ${
+                      activeDropdown === item.title ? "rotate-180" : ""
+                    }`}
+                  />
+                )}
               </button>
               {item.submenu && (
-                <div className="pl-4 space-y-2">
+                <div
+                  className={`pl-4 space-y-2 transition-all duration-300 ${
+                    activeDropdown === item.title ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
                   {item.submenu.map((subItem) => (
                     <a
                       key={subItem.title}
-                      onClick={()=>router.push(`${subItem.href}`)}
+                      onClick={() => {
+                        router.push(`${subItem.href}`);
+                        setIsMobileMenuOpen(false);
+                      }}
                       className="block px-4 py-2 text-gray-600 cursor-pointer hover:text-blue-600 rounded-lg hover:bg-blue-50/50"
                     >
                       {subItem.title}
@@ -284,7 +249,10 @@ export const Header: React.FC = () => {
             {isLoggedIn && (
               <button
                 className="w-full flex items-center space-x-2 p-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors"
-                onClick={() => router.push("/pages/profile")}
+                onClick={() => {
+                  router.push("/pages/profile");
+                  setIsMobileMenuOpen(false);
+                }}
               >
                 <User className="w-5 h-5" />
                 <span>Profile</span>
@@ -292,7 +260,15 @@ export const Header: React.FC = () => {
             )}
             <button
               className="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors"
-              onClick={() => isLoggedIn ? setShowLogoutDialog(true) : setShowAuthDialog(true)}
+              onClick={() => {
+                if (isLoggedIn) {
+                  setShowLogoutDialog(true);
+                  setIsMobileMenuOpen(false);
+                } else {
+                  setShowAuthDialog(true);
+                  setIsMobileMenuOpen(false);
+                }
+              }}
             >
               <div className="flex items-center space-x-2">
                 {isLoggedIn ? (
@@ -303,7 +279,10 @@ export const Header: React.FC = () => {
                 <span>{isLoggedIn ? "Sign Out" : "Sign In"}</span>
               </div>
             </button>
-            <button className="w-full bg-blue-600 text-white px-6 py-3 rounded-full flex items-center justify-center space-x-2 hover:bg-blue-700 transition-colors" onClick={() => router.push("/pages/all-resume")}>
+            <button className="w-full bg-blue-600 text-white px-6 py-3 rounded-full flex items-center justify-center space-x-2 hover:bg-blue-700 transition-colors" onClick={() => {
+              router.push("/pages/all-resume");
+              setIsMobileMenuOpen(false);
+            }}>
               <Download className="w-4 h-4" />
               <span>Create Resume</span>
             </button>

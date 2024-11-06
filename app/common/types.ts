@@ -12,7 +12,8 @@ export interface ResumeData {
     city: string;
     state: string;
     summary: string;
-    profilePic:string;
+    profileImage:string;
+    jobTitle:string;
   };
   experiences: Experience[];
   education: EducationEntry[]
@@ -32,6 +33,10 @@ export interface PersonalInfoData {
     city: string;
     state: string;
     summary: string;
+    jobTitle:string;
+    profileImage:string | null;
+
+    
   }
   
   export interface FormErrors {
@@ -40,6 +45,7 @@ export interface PersonalInfoData {
     dateOfBirth?: string;
     phone?: string;
     email?: string;
+    jobTitle?:string;
   }
   
   export interface FormTouched {
@@ -48,6 +54,8 @@ export interface PersonalInfoData {
     dateOfBirth?: boolean;
     phone?: boolean;
     email?: boolean;
+    jobTitle?:string;
+
   }
 
   export interface Experience {

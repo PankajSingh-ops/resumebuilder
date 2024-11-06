@@ -48,9 +48,9 @@ const SixthResume: React.FC<ResumeSixthProps> = ({ formData }) => {
         {/* Profile Picture */}
         <div className="mb-8 text-center">
           <div className="w-32 h-32 mx-auto mb-4 border-4 border-white rounded-full overflow-hidden shadow-lg">
-            {personal?.profilePic ? (
+            {personal?.profileImage ? (
               <img 
-                src={personal.profilePic} 
+                src={personal.profileImage} 
                 alt="Profile" 
                 className="w-full h-full object-cover"
               />

@@ -303,7 +303,9 @@ function validateAndCleanData(data: any): ResumeData {
               city: String(data.personal?.city || ''),
               state: String(data.personal?.state || ''),
               summary: String(data.personal?.summary || ''),
-              profilePic: String(data.personal?.profilePic || '')
+              profileImage: '',
+              jobTitle:String(data.personal?.jobTitle || ''),
+
           },
           experiences: (data.experiences || []).map((exp: Experience) => {
               const validatedType = validateExperienceType(exp.type);

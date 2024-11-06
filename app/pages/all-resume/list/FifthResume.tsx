@@ -45,9 +45,9 @@ const FifthResume: React.FC<ResumeFifthProps> = ({ formData }) => {
         {/* Profile Picture Section */}
         <div className="mb-8 text-center">
           <div className="w-36 h-36 mx-auto mb-4 bg-blue-200 rounded-full flex items-center justify-center overflow-hidden shadow-md">
-            {personal?.profilePic ? (
+            {personal?.profileImage ? (
               <img 
-                src={personal.profilePic} 
+                src={personal.profileImage} 
                 alt="Profile" 
                 className="w-full h-full object-cover"
               />

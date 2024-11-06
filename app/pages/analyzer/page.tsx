@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Upload, Check, Loader, Search, AlertTriangle } from 'lucide-react';
 import { Card, CardContent } from '../../ui/analyzer/Card';
 import { Button } from '../../ui/analyzer/Button';
@@ -7,9 +7,10 @@ import { TextInput } from '../../ui/analyzer/Text';
 import Cookies from 'js-cookie';
 import { Footer } from '@/app/common/Footer';
 import ResumeHeader from '@/app/ui/resume/ResumeHeader';
-import { decrementCredits } from '@/app/routes/Credits';
+import { decrementCredits, fetchCredits } from '@/app/routes/Credits';
 import { useAppDispatch } from '@/redux/store/store';
 import { updateCredits } from '@/redux/authSlice/authSlice';
+import CreditDialog from '@/app/common/Buy';
 
 interface AnalysisResult {
   points: number;
@@ -22,6 +23,8 @@ const ResumeAnalyzer: React.FC = () => {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [credits, setCredits] = useState<number | null>(null);
+  const [showCreditDialog, setShowCreditDialog] = useState(false);
   const dispatch=useAppDispatch()
   const token = Cookies.get('token');
 
@@ -31,11 +34,28 @@ const ResumeAnalyzer: React.FC = () => {
       setError(null);
     }
   };
+  useEffect(() => {
+    const loadCredits = async () => {
+      if (!token) return;
+      
+      try {
+        const userCredits = await fetchCredits(token);
+        setCredits(userCredits);
+        dispatch(updateCredits(userCredits));
+      } catch (error) {
+        console.error('Error fetching credits:', error);
+        setError('Failed to fetch credit information');
+      }
+    };
+
+    loadCredits();
+  }, [token, dispatch]);
   const updateUserCredits = async () => {
     if (!token) {
       setError('Authentication required');
       throw new Error('Authentication required');
     }
+    
 
     try {
       const newCredits = await decrementCredits(token);
@@ -51,6 +71,11 @@ const ResumeAnalyzer: React.FC = () => {
   const handleAnalyze = async () => {
     if (!file) {
       setError('Please upload a file to analyze.');
+      return;
+    }
+    if (credits === null || credits <= 0) {
+      setError('No credits available. Please purchase more credits to download.');
+      setShowCreditDialog(true);
       return;
     }
 
@@ -239,6 +264,11 @@ const ResumeAnalyzer: React.FC = () => {
         </CardContent>
       </Card>
     </div>
+    <CreditDialog
+  isOpen={showCreditDialog}
+  onClose={() => setShowCreditDialog(false)}
+  onBuy={handleAnalyze}
+/>
     <Footer/>
     </>
   );

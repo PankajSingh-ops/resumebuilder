@@ -6,6 +6,7 @@ import { ArrowRight, FileText, Star, Users, CheckCircle } from "lucide-react"
 import { useEffect, useState } from "react"
 import Cookies from "js-cookie"
 import FeaturesGrid from "./ui/home/FeatureCard"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
   const [user, setIsUser] = useState(false)
@@ -13,6 +14,7 @@ export default function Home() {
     const token = Cookies.get('token');
     setIsUser(!!token);
   }, [user]);
+  const router=useRouter()
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -39,12 +41,12 @@ export default function Home() {
                   Build Your Resume <ArrowRight className="w-5 h-5" />
                 </Link>
                 {!user && (
-                  <Link 
-                    href="/login" 
-                    className="bg-transparent text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/10 transition-all border-2 border-white flex items-center justify-center gap-2 text-lg"
+                  <a 
+                    onClick={()=>router.push("/pages/auth")} 
+                    className="bg-transparent text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/10 transition-all border-2 border-white flex items-center justify-center gap-2 text-lg cursor-pointer"
                   >
                     Sign In to Get Started
-                  </Link>
+                  </a>
                 )}
               </div>
               <div className="mt-12 flex gap-8 flex-wrap">

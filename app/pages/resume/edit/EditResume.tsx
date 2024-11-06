@@ -33,7 +33,8 @@ const IntegratedResumePage: React.FC<IntegratedResumePageProps> = ({ setFormData
         city: "",
         state: "",
         summary: "",
-        profilePic: ""
+        profileImage: "",
+        jobTitle:""
       },
       experiences: [],
       education: [],

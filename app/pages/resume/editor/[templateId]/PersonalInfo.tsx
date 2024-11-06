@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import {
   AlertCircle,
   Calendar,
+  Camera,
   GithubIcon,
   Linkedin,
   Mail,
@@ -25,6 +26,9 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<FormTouched>({});
   const [isFormValid, setIsFormValid] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [profileImage, setProfileImage] = useState<any>(null);
+
 
   const validateField = (name: string, value: string): string => {
     switch (name) {
@@ -41,6 +45,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
         return !value.match(/^\+?[\d\s-()]{10,}$/)
           ? "Please enter a valid phone number"
           : "";
+      case "jobTitle":
+        return value.trim() === "" ? "Job title is required" : "";
       case "dateOfBirth":
         if (!value) return "Date of birth is required";
         const date = new Date(value);
@@ -54,8 +60,22 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
 
   const handleBlur = (name: string) => {
     setTouched((prev) => ({ ...prev, [name]: true }));
-    const error = validateField(name, formData[name as keyof PersonalInfoData]);
+    const error = validateField(name, formData[name as keyof PersonalInfoData] ?? "");
     setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+
+  const convertToBase64 = (file: File): Promise<string | null> => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result as string);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+        console.error("Error converting to base64:", error);
+      };
+    });
   };
 
   const handleChange = (
@@ -67,12 +87,26 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
       [name]: value,
     };
     setFormData(updatedFormData);
-
     if (touched[name as keyof FormTouched]) {
       const error = validateField(name, value);
       setErrors((prev) => ({ ...prev, [name]: error }));
     }
+    if (e.target.name === "profileImage") {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        convertToBase64(file).then((base64) => {
+          setFormData({ ...formData, profileImage: base64 });
+          setProfileImage(base64);
+        });
+      } else {
+        setFormData({ ...formData, profileImage: null });
+        setProfileImage(null);
+      }
+    }
   };
+  console.log(profileImage,"profile");
+  
+
 
   // Validate form and update parent component
   useEffect(() => {
@@ -100,6 +134,36 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           <User className="h-6 w-6 text-blue-500" />
           Personal Information
         </h2>
+        <div className="relative">
+    <label
+      htmlFor="profileImage"
+      className="cursor-pointer flex items-center justify-center h-16 w-16 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+    >
+      {typeof profileImage === "string" ? (
+        <img
+          src={profileImage}
+          alt="Profile"
+          className="h-16 w-16 rounded-full object-cover"
+        />
+      ) : profileImage ? (
+        <img
+          src={URL.createObjectURL(profileImage)}
+          alt="Profile"
+          className="h-16 w-16 rounded-full object-cover"
+        />
+      ) : (
+        <Camera className="h-6 w-6" />
+      )}
+    </label>
+    <input
+      id="profileImage"
+      type="file"
+      name="profileImage"
+      accept="image/*"
+      className="hidden"
+      onChange={handleChange}
+    />
+  </div>
 
         {/* Required Fields Notice */}
         <div className="bg-blue-50 text-blue-800 border border-blue-200 rounded-lg p-4 flex items-start space-x-3">
@@ -163,6 +227,28 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
               </div>
             </div>
           </div>
+          <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-900">
+                Job Title *
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-600" />
+                </div>
+                <input
+                  type="text"
+                  name="jobTitle"
+                  value={formData.jobTitle}
+                  onChange={handleChange}
+                  onBlur={() => handleBlur("jobTitle")}
+                  className="pl-10 w-full rounded-lg border border-gray-300 p-3 text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out bg-white"
+                  placeholder="Software Engineer"
+                />
+                {errors.jobTitle && touched.jobTitle && (
+                  <p className="mt-1 text-sm text-red-600">{errors.jobTitle}</p>
+                )}
+              </div>
+            </div>
 
           {/* Contact Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
