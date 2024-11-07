@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Search, Briefcase, UserCheck, Building2, LineChart, Code2, Users, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Header } from '@/app/common/Header';
 import { Footer } from '@/app/common/Footer';
@@ -20,19 +20,28 @@ const ITEMS_PER_PAGE = 6;
 
 const ResumeTemplateSelector = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [categoryFromQuery, setCategoryFromQuery] = useState<string | null>(null);
+
 
   // Initialize category from query parameter
   useEffect(() => {
-    const categoryFromQuery = searchParams.get('category');
+    const fetchCategoryFromQuery = async () => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const categoryParam = searchParams.get('category');
+      setCategoryFromQuery(categoryParam);
+    };
+    fetchCategoryFromQuery();
+  }, []);
+
+  useEffect(() => {
     if (categoryFromQuery && categories.some(cat => cat.id === categoryFromQuery)) {
       setSelectedCategory(categoryFromQuery);
     }
-  }, [searchParams]);
+  }, [categoryFromQuery]);
 
   // Update URL when category changes
   const handleCategoryChange = (categoryId: string) => {

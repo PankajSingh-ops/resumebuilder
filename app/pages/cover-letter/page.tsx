@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Search, Tag, Filter, X, ChevronDown, Sparkles } from 'lucide-react';
 import { Skeleton } from '@mui/material';
 import { templates } from './CoverTemplates';
@@ -11,7 +11,6 @@ const categories = ["All", "Professional", "IT", "Marketing", "Fresher", "Creati
 
 const CoverLetterTemplates = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
@@ -19,11 +18,12 @@ const CoverLetterTemplates = () => {
 
   // Initialize category from URL query parameter
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
     const categoryFromQuery = searchParams.get('category');
     if (categoryFromQuery && categories.includes(categoryFromQuery)) {
       setSelectedCategory(categoryFromQuery);
     }
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
