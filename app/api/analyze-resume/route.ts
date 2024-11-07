@@ -266,6 +266,7 @@ async function extractTextFromFile(file: File): Promise<string> {
           // Remove any markdown formatting
           responseText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
           responseText = responseText.trim();
+          
     
           // Parse the JSON response
           const analysisData = JSON.parse(responseText);
@@ -283,7 +284,14 @@ async function extractTextFromFile(file: File): Promise<string> {
         } catch (parseError) {
           console.error('Error parsing Gemini response:', parseError);
           console.error('Raw response:', responseText);
-          throw new Error(`Failed to parse resume analysis: ${parseError}`);
+          const fallbackParsedResponse = tryParseFallbackJSON(responseText);
+
+      if (fallbackParsedResponse) {
+        validateAnalysisData(fallbackParsedResponse);
+        return fallbackParsedResponse;
+      } else {
+        throw new Error('Failed to parse resume analysis');
+      }
         }
     
       } catch (error) {
@@ -331,4 +339,17 @@ async function extractTextFromFile(file: File): Promise<string> {
           }
           return cleaned;
         });
+    }
+
+    function tryParseFallbackJSON(responseText: string): ResumeAnalysis | null {
+      try {
+        // Attempt to fix common JSON issues
+        responseText = responseText
+          .replace(/,(\s*])/, ']') // Remove trailing commas
+          .replace(/,\s*}/, '}');  // Remove trailing commas in objects
+    
+        return JSON.parse(responseText) as ResumeAnalysis;
+      } catch {
+        return null;
+      }
     }

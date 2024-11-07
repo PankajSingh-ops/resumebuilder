@@ -1,6 +1,6 @@
 "use client"
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, Briefcase, UserCheck, Building2, LineChart, Code2, Users, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Header } from '@/app/common/Header';
 import { Footer } from '@/app/common/Footer';
@@ -20,10 +20,32 @@ const ITEMS_PER_PAGE = 6;
 
 const ResumeTemplateSelector = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Initialize category from query parameter
+  useEffect(() => {
+    const categoryFromQuery = searchParams.get('category');
+    if (categoryFromQuery && categories.some(cat => cat.id === categoryFromQuery)) {
+      setSelectedCategory(categoryFromQuery);
+    }
+  }, [searchParams]);
+
+  // Update URL when category changes
+  const handleCategoryChange = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setCurrentPage(1);
+    setIsSidebarOpen(false);
+    
+    // Update URL with new category
+    const newUrl = categoryId === 'all' 
+      ? '/pages/all-resume'
+      : `/pages/all-resume?category=${categoryId}`;
+    router.push(newUrl);
+  };
 
   const filteredTemplates = templates.filter(template => {
     const matchesCategory = selectedCategory === 'all' || template.categories.includes(selectedCategory);
@@ -94,11 +116,7 @@ const ResumeTemplateSelector = () => {
                 return (
                   <button
                     key={category.id}
-                    onClick={() => {
-                      setSelectedCategory(category.id);
-                      setCurrentPage(1);
-                      setIsSidebarOpen(false);
-                    }}
+                    onClick={() => handleCategoryChange(category.id)}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 ${
                       selectedCategory === category.id
                         ? 'bg-blue-500 text-white shadow-lg shadow-blue-200'

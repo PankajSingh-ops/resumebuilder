@@ -89,7 +89,7 @@ const SignInAndRegisterPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+    <div className="flex items-center p-5 justify-center h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
         {error && (
           <AlertDialog>

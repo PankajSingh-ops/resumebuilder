@@ -13,18 +13,18 @@ export const navigation: NavItem[] = [
       submenu: [
         {
           title: "Professional",
-          href: "/pages/all-resume",
+          href: "/pages/all-resume?category=professional",
           description: "Clean and modern templates for corporate jobs",
         },
         {
-          title: "Creative",
-          href: "/pages/all-resume",
-          description: "Stand out with unique designs for creative fields",
+          title: "Freshers",
+          href: "/pages/all-resume?category=fresher",
+          description: "Stand out with unique designs for Freshers",
         },
         {
-          title: "Academic",
-          href: "/pages/all-resume",
-          description: "Specialized templates for academic positions",
+          title: "MNC",
+          href: "/pages/all-resume?category=mnc",
+          description: "Specialized templates for MNC",
         },
       ],
     },
@@ -35,18 +35,18 @@ export const navigation: NavItem[] = [
       submenu: [
         {
           title: "Professional",
-          href: "/pages/cover-letter",
+          href: "/pages/cover-letter?category=Professional",
           description: "Clean and modern templates for corporate jobs",
         },
         {
           title: "Creative",
-          href: "/pages/cover-letter",
+          href: "/pages/cover-letter?category=Creative",
           description: "Stand out with unique designs for creative fields",
         },
         {
-          title: "Academic",
-          href: "/pages/cover-letter",
-          description: "Specialized templates for academic positions",
+          title: "IT",
+          href: "/pages/cover-letter?category=IT",
+          description: "Specialized templates for IT companies",
         },
         
       ],

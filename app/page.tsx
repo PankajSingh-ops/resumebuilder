@@ -34,12 +34,12 @@ export default function Home() {
                 Create ATS-friendly resumes that capture attention and land interviews.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link 
-                  href="/builder" 
-                  className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 text-lg"
+                <a
+                  onClick={()=>router.push("/pages/all-resume")}
+                  className="bg-white text-blue-600 px-8 py-4 cursor-pointer rounded-lg font-semibold hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 text-lg"
                 >
                   Build Your Resume <ArrowRight className="w-5 h-5" />
-                </Link>
+                </a>
                 {!user && (
                   <a 
                     onClick={()=>router.push("/pages/auth")} 

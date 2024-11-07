@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, Tag, Filter, X, ChevronDown, Sparkles } from 'lucide-react';
 import { Skeleton } from '@mui/material';
 import { templates } from './CoverTemplates';
@@ -11,10 +11,19 @@ const categories = ["All", "Professional", "IT", "Marketing", "Fresher", "Creati
 
 const CoverLetterTemplates = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Initialize category from URL query parameter
+  useEffect(() => {
+    const categoryFromQuery = searchParams.get('category');
+    if (categoryFromQuery && categories.includes(categoryFromQuery)) {
+      setSelectedCategory(categoryFromQuery);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -22,8 +31,19 @@ const CoverLetterTemplates = () => {
     }, 500);
   }, []);
 
-  const handleTemplateClick = (id:number) => {
+  const handleTemplateClick = (id: number) => {
     router.push(`/cover-letter/template/${id}`);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setIsFilterOpen(false);
+
+    // Update URL with new category
+    const newUrl = category === 'All' 
+      ? '/pages/cover-letter'
+      : `/pages/cover-letter/?category=${category}`;
+    router.push(newUrl);
   };
 
   const filteredTemplates = templates.filter(template => {
@@ -94,10 +114,7 @@ const CoverLetterTemplates = () => {
                   {categories.map((category) => (
                     <button
                       key={category}
-                      onClick={() => {
-                        setSelectedCategory(category);
-                        setIsFilterOpen(false);
-                      }}
+                      onClick={() => handleCategoryChange(category)}
                       className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300
                         ${selectedCategory === category
                           ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg shadow-blue-200/50 transform scale-105'
