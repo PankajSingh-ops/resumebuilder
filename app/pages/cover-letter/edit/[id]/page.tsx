@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { Send, FileText, Bot, User, Building2,} from 'lucide-react';
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/generative-ai';
-import CoverLetterPreview from '../preview/Preview';
 import ResumeHeader from '@/app/ui/resume/ResumeHeader';
+import { useParams } from 'next/navigation';
 
 const CoverLetterGenerator = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +20,10 @@ const CoverLetterGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [error, setError] = useState('');
-  const [showPreview, setShowPreview] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState('');
+  const params = useParams();
+  const coverId = params.id;
+  
 
 
   // Initialize Google Generative AI with public env variable
@@ -37,7 +40,6 @@ const CoverLetterGenerator = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle navigation to preview
-    setShowPreview(true);
     console.log('Form submitted:', formData);
   };
 
@@ -94,6 +96,35 @@ const CoverLetterGenerator = () => {
       setIsGenerating(false);
     }
   };
+  const handleDownloadCoverLetter = async () => {
+    try {
+      const response = await fetch(`/api/cover-letter/template/${coverId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+  
+      if (response.ok) {
+        console.log(response,"response");
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        setPdfUrl(url);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'Cover_Letter.pdf';
+        link.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+        setError('Failed to download the cover letter.');
+      }
+    } catch (err) {
+      console.log(err);
+      setError('An error occurred while downloading the cover letter.');
+    }
+  };
+  console.log(pdfUrl,"pdf");
+  
 
   const isStepComplete = (step: number): boolean => {
     switch (step) {
@@ -120,37 +151,30 @@ const CoverLetterGenerator = () => {
         </div>
 
         {/* Progress Steps */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center">
-            {[1, 2, 3].map((step) => (
+        <div className="flex justify-between items-center mb-8">
+            {[1, 2, 3, 4].map((step) => (
               <div key={step} className="flex-1">
-                <div 
-                  className={`flex items-center justify-center ${
-                    step < currentStep ? 'text-blue-600' :
-                    step === currentStep ? 'text-blue-600' : 'text-gray-400'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 
-                    ${step < currentStep ? 'bg-blue-600 border-blue-600 text-white' :
-                      step === currentStep ? 'border-blue-600 text-blue-600' : 'border-gray-300'}`}
-                  >
+                <div className={`flex items-center justify-center ${
+                  step < currentStep ? 'text-blue-600' : step === currentStep ? 'text-blue-600' : 'text-gray-400'
+                }`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${
+                    step < currentStep ? 'bg-blue-600 border-blue-600 text-white' : 
+                    step === currentStep ? 'border-blue-600 text-blue-600' : 'border-gray-300'
+                  }`}>
                     {step}
                   </div>
                   <div className={`hidden sm:block flex-1 h-1 ${
-                    step < 3 ? (step < currentStep ? 'bg-blue-600' : 'bg-gray-300') : ''
+                    step < 4 ? (step < currentStep ? 'bg-blue-600' : 'bg-gray-300') : ''
                   }`} />
                 </div>
                 <div className="text-center mt-2">
-                  <span className={`text-sm ${
-                    step <= currentStep ? 'text-gray-900' : 'text-gray-500'
-                  }`}>
-                    {step === 1 ? 'Personal Info' : step === 2 ? 'Company Details' : 'Letter Content'}
+                  <span className={`text-sm ${step <= currentStep ? 'text-gray-900' : 'text-gray-500'}`}>
+                    {step === 1 ? 'Personal Info' : step === 2 ? 'Company Details' : step === 3 ? 'Letter Content' : 'All Details'}
                   </span>
                 </div>
               </div>
             ))}
           </div>
-        </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Step 1: Personal Information */}
@@ -318,6 +342,143 @@ const CoverLetterGenerator = () => {
             </div>
           </div>
 
+          <div className={`transition-all duration-300 ${currentStep === 4 ? 'block' : 'hidden'}`}>
+            <div className="bg-white shadow-lg p-6 space-y-6">
+              <div className="flex items-center border-b pb-4">
+                <User className="w-6 h-6 text-blue-600 mr-2" />
+                <h2 className="text-xl font-semibold text-gray-900">Personal Information</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                    required
+                  />
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="sm:col-span-2 flex items-center space-x-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                    <textarea
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      rows={2}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white shadow-lg p-6 space-y-6">
+              <div className="flex items-center border-b pb-4">
+                <Building2 className="w-6 h-6 text-blue-600 mr-2" />
+                <h2 className="text-xl font-semibold text-gray-900">Company Information</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                  <input
+                    type="text"
+                    name="companyName"
+                    value={formData.companyName}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Hiring Manager</label>
+                  <input
+                    type="text"
+                    name="hiringManager"
+                    value={formData.hiringManager}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white shadow-lg p-6 space-y-6">
+              <div className="flex items-center justify-between border-b pb-4">
+                <div className="flex items-center">
+                  <FileText className="w-6 h-6 text-blue-600 mr-2" />
+                  <h2 className="text-xl font-semibold text-gray-900">Letter Content</h2>
+                </div>
+              </div>
+              {error && (
+            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-red-700">{error}</p>
+                </div>
+              </div>
+            </div>
+          )}
+              
+              <textarea
+                name="letterDetails"
+                value={formData.letterDetails}
+                onChange={handleInputChange}
+                rows={12}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                required
+                placeholder="Your cover letter content will appear here..."
+              />
+            </div>
+          </div>
+          
+
           {/* Navigation Buttons */}
           <div className="flex justify-between">
             <button
@@ -329,38 +490,30 @@ const CoverLetterGenerator = () => {
               Previous
             </button>
             
-            {currentStep < 3 ? (
-              <button
-                type="button"
-                onClick={() => setCurrentStep(curr => Math.min(3, curr + 1))}
-                disabled={!isStepComplete(currentStep)}
-                className={`px-6 py-2 rounded-lg text-white 
-                  ${isStepComplete(currentStep) ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400'}
-                  transition duration-200`}
-              >
-                Next
-              </button>
-            ) : (
-              <button
-                type="submit"
-                disabled={!isStepComplete(3)}
-                className={`inline-flex items-center px-6 py-2 rounded-lg text-white 
-                  ${isStepComplete(3) ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400'}
-                  transition duration-200`}
-              >
-                <Send className="mr-2 h-5 w-5" />
-                Preview Letter
-              </button>
-            )}
+            {currentStep < 4 ? (
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(curr => Math.min(4, curr + 1))}
+                  disabled={!isStepComplete(currentStep)}
+                  className={`px-6 py-2 rounded-lg text-white ${
+                    isStepComplete(currentStep) ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400'
+                  } transition duration-200`}
+                >
+                  Next
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleDownloadCoverLetter}
+                  className="inline-flex items-center px-6 py-2 rounded-lg text-white bg-green-600 hover:bg-green-700 transition duration-200"
+                >
+                  <Send className="mr-2 h-5 w-5" />
+                  Download Cover Letter
+                </button>
+              )}
           </div>
         </form>
       </div>
-      {showPreview && (
-  <CoverLetterPreview
-    formData={formData}
-    onClose={() => setShowPreview(false)}
-  />
-)}
     </div>
     </>
   );

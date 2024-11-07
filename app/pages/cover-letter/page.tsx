@@ -32,7 +32,7 @@ const CoverLetterTemplates = () => {
   }, []);
 
   const handleTemplateClick = (id: number) => {
-    router.push(`/cover-letter/template/${id}`);
+    router.push(`/pages/cover-letter/edit/${id}`);
   };
 
   const handleCategoryChange = (category: string) => {

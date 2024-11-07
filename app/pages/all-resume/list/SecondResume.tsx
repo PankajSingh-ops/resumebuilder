@@ -50,9 +50,7 @@ const SecondResume: React.FC<ResumePreviewProps> = ({ formData }) => {
       <div className="w-1/3 bg-gray-50 p-6 border-r border-gray-200">
         <div className="mb-8">
           <div className="w-32 h-32 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-            <span className="text-4xl font-bold text-gray-400">
-              {personal.firstName?.[0]}{personal.lastName?.[0]}
-            </span>
+            <img src={personal?.profileImage} alt="" />
           </div>
           <h1 className="text-xl font-bold text-center text-gray-800 mb-1">
             {personal.firstName} {personal.lastName}

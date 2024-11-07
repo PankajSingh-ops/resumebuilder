@@ -343,13 +343,17 @@ async function extractTextFromFile(file: File): Promise<string> {
 
     function tryParseFallbackJSON(responseText: string): ResumeAnalysis | null {
       try {
-        // Attempt to fix common JSON issues
+        // Remove problematic characters or lines that may interfere with parsing
         responseText = responseText
-          .replace(/,(\s*])/, ']') // Remove trailing commas
-          .replace(/,\s*}/, '}');  // Remove trailing commas in objects
+          .replace(/^\s*JSON\s*/i, '') // Remove "JSON" if it appears at the start
+          .replace(/```json|```/g, '') // Remove markdown code block delimiters if present
+          .replace(/,(\s*})/g, '}') // Remove trailing commas before object closing
+          .replace(/,(\s*])/g, ']'); // Remove trailing commas before array closing
     
         return JSON.parse(responseText) as ResumeAnalysis;
-      } catch {
+      } catch (parseError) {
+        console.error("Error in fallback JSON parsing:", parseError);
         return null;
       }
     }
+    
