@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { Upload, Check, Loader, Search, AlertTriangle } from 'lucide-react';
+import { Upload, Check, Loader, Search, AlertTriangle, RotateCcw } from 'lucide-react';
 import { Card, CardContent } from '../../ui/analyzer/Card';
 import { Button } from '../../ui/analyzer/Button';
 import { TextInput } from '../../ui/analyzer/Text';
@@ -132,6 +132,12 @@ const ResumeAnalyzer: React.FC = () => {
     if (score >= 60) return 'bg-yellow-100 text-yellow-800';
     return 'bg-red-100 text-red-800';
   };
+  const handleReset = () => {
+    setFile(null);
+    setResult(null);
+    setError(null);
+    setIsScanning(false);
+  };
 
   return (
     <>
@@ -146,6 +152,15 @@ const ResumeAnalyzer: React.FC = () => {
             <div className="space-y-6">
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-gray-800">Resume Analysis</h2>
+                {(file || result || error) && (
+                      <Button
+                        onClick={handleReset}
+                        className="p-2 text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                        variant="ghost"
+                      >
+                        <RotateCcw className="w-5 h-5" />
+                      </Button>
+                    )}
                 <p className="text-gray-500 mt-2">Upload your resume for AI-powered analysis</p>
               </div>
 
